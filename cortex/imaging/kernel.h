@@ -1,0 +1,3 @@
+/*
+Kernal struct prototype declarations
+*/

@@ -1,0 +1,3 @@
+/*
+Image struct prototype declarations
+*/

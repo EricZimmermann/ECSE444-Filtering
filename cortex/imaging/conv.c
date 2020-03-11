@@ -2,12 +2,11 @@
 Convolutional operations
 */
 
-
 #include "image.h"
 #include "kernel.h"
 
 void convolve(struct Image, struct Kernel){
-	uint8_t half_band = Kernel.size / 2;
+	uint8_t half_band =;
 	
 	// image iterables
 	for(uint8_t irow  = 0, irow < Image.size; ++irow){
@@ -17,9 +16,9 @@ void convolve(struct Image, struct Kernel){
 			for(uint8_t krow = 0; krow < Kernel.size; ++krow){
 				for(uint8_t kcol = 0; kcol < Kernel.size; ++kcol){
 					
-					// image-kernel index mapping
-					uint8_t rindex = irow - half_band + krow;
-					uint8_t cindex = irow - half_band + krow
+					// image-kernel index mapping ~ must be signed 
+					int rindex = irow + krow - Kernel.size / 2;
+					int cindex = icol + kcol - Kernel.size / 2;
 					
 					// simulate padded borders
 					if(rindex < 0){

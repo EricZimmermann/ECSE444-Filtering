@@ -26,7 +26,6 @@ void deinitKernel(struct Kernel){
 	free(Kernel.data);
 }
 
-
 void generateFilter(struct Kernel, sigma){    
 	float sum = 0;
 	uint8_t half_band = Kernel.size / 2;

@@ -57,13 +57,6 @@ void ifft(struct CImage input, struct Image output){
 			}
 		}
 	}
-
-	// normalize by avg
-	for(yS = 0; yS < input.size; ++yS){
-		for(xS = 0; xS < input.size; ++xS){
-				output.data[yS][xS] /= norm;
-		}
-	}
 }
 
 float magitude(float a, float b){

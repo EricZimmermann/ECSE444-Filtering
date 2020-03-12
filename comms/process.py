@@ -5,9 +5,12 @@ def loadImage(filepath):
 	return cv2.imread(filepath, cv2.IMREAD_GRAYSCALE)
 
 def save(image, filepath):
-	image_stream = image.flatten().tolist()
+	image_stream = listify(image)
 	with open(filepath, "w") as output:
     	output.write(str(image))
+
+ def listify(image):
+ 	return image.flatten().tolist()
 
 def fuzz(image, ranges, p=0.15):
 	rows, cols = image.shape

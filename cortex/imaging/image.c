@@ -49,6 +49,25 @@ void initComplex(struct CImage image, uint8_t size){
 	}
 }
 
+// zero out content of image
+void resetImage(struct Image image){
+	for(uint8_t row = 0; row < image.size){
+		for(uint8_t col = 0; col < image.size){
+			image.data[row][col] = 0;
+		}
+	}
+}
+
+// zero out content of image
+void resetImage(struct CImage image){
+	for(uint8_t row = 0; row < image.size){
+		for(uint8_t col = 0; col < image.size){
+			image.re[row][col] = 0;
+			image.im[row][col] = 0;
+		}
+	}
+}
+
 // deallocate memory in image
 void deinitImage(struct Image image){
 	for(uint8_t row = 0; row < image.size){

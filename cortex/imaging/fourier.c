@@ -12,47 +12,47 @@ cooley-tukey
 
 // https://www.originlab.com/doc/Origin-Help/FFT2-Algorithm
 void fft(struct Image input, struct CImage output){
-	uint8_t yW, xW;             // wave components
-	uint8_t yS, xS;             // spatial component  
+	uint8_t v, u;             // wave components
+	uint8_t y, x;             // spatial component
 	float modulator;
 	float norm = input.size * input.size;
 	
 	// accumulator
-	for(yW = 0; yW < input.size; ++yW){
-		for(xW = 0; xW < input.size; ++xW){
-			for(yS = 0; yS < input.size; ++yS){
-				for(xS = 0; xS < input.size; ++xS){
-					modulator = -2.0 * PI * ((1.0 * xW * xS + 1.0 * yW * yS) / input.size);
-					output.re[yW][xW] += input[yS][xS] * cos(modulator);
-					output.im[yW][xW] += input[yS][xS] * sin(modulator);
+	for(v = 0; v < input.size; ++v){
+		for(u = 0; u < input.size; ++u){
+			for(y = 0; y < input.size; ++y){
+				for(x = 0; x < input.size; ++x){
+					modulator = -2.0 * PI * ((1.0 * u * x + 1.0 * v * y) / input.size);
+					output.re[v][u] += input[y][x] * cos(modulator);
+					output.im[v][u] += input[y][x] * sin(modulator);
 				}
 			}
 		}
 	}
 
 	// normalize by avg
-	for(yW = 0; yW < input.size; ++yW){
-		for(xW = 0; xW < input.size; ++xW){
-				output.re[yW][xW] /= norm;
-				output.im[yW][xW] /= norm;
+	for(v = 0; v < input.size; ++v){
+		for(u = 0; u < input.size; ++u){
+				output.re[v][u] /= norm;
+				output.im[v][u] /= norm;
 		}
 	}
 }
 
 // https://www.originlab.com/doc/Origin-Help/InverseFFT2-Algorithm
 void ifft(struct CImage input, struct Image output){
-	uint8_t yW, xW;             // wave components
-	uint8_t yS, xS;             // spatial component
+	uint8_t v, u;             // wave components
+	uint8_t y, x;             // spatial component
 	float modulator;
 	float norm = input.size * input.size;
 		
 	// accumulator
-	for(yS = 0; yS < input.size; ++yS){
-		for(xS = 0; xS < input.size; ++xS){
-			for(yW = 0; yW < input.size; ++yW){
-				for(xW = 0; xW < input.size; ++xW){
-					modulator = 2.0 * PI * ((1.0 * xW * xS + 1.0 * yW * yS) / input.size);
-					output.data[yS][xS] += input.re[yW][xW] * cos(modulator) + input.im[yW][xW] * sin(modulator);
+	for(y = 0; y < input.size; ++y){
+		for(x = 0; x < input.size; ++x){
+			for(v = 0; v < input.size; ++v){
+				for(u = 0; u < input.size; ++u){
+					modulator = 2.0 * PI * ((1.0 * u * x + 1.0 * v * y) / input.size);
+					output.data[y][x] += input.re[v][u] * cos(modulator) + input.im[v][u] * sin(modulator);
 				}
 			}
 		}

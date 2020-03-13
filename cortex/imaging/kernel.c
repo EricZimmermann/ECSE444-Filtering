@@ -27,11 +27,13 @@ void deinitKernel(struct Kernel kernel){
 }
 
 void generateFilter(struct Kernel kernel, sigma){    
+	
 	float sum = 0;
 	uint8_t half_band = kernel.size / 2;
+    
     for (uint8_t i = - half_band; i <= half_band; i++) {
         for (uint8_t j = - half_band; j <= half_band; j++) {
-            kernel.data[i+half_band][j+half_band] = exp(-1*((pow(i, 2) + pow(j, 2)) / ((2 * pow(sigma, 2))))); // unnormalized guassian
+            kernel.data[i+half_band][j+half_band] = expf(-1*((pow(i, 2) + pow(j, 2)) / ((2 * pow(sigma, 2))))); // unnormalized guassian
             sum += kernel.data[i+half_band][j+half_band] // normalization pooling
         }
     }

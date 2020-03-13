@@ -7,17 +7,24 @@ Convolutional operations
 
 void convolve(struct Image input, struct Image output, struct Kernel kernel){
 	
+
+	uint8_t irow, icol;
+	uint8_t krow, kcol;
+	uint8_t half_band = kernel.size / 2;
+	int rindex;
+	int cindex
+
 	// image iterables
-	for(uint8_t irow  = 0, irow < input.size; ++irow){
-		for(uint8_t icol  = 0, icol < input.size; ++icol){
-			
+	for(irow  = 0, irow < input.size; ++irow){
+		for(  = 0, icol < input.size; ++icol){
+	
 			// kernel iterables
-			for(uint8_t krow = 0; krow < kernel.size; ++krow){
-				for(uint8_t kcol = 0; kcol < kernel.size; ++kcol){
+			for(krow = 0; krow < kernel.size; ++krow){
+				for(kcol = 0; kcol < kernel.size; ++kcol){
 					
 					// image-kernel index mapping ~ must be signed 
-					int rindex = irow + krow - kernel.size / 2;
-					int cindex = icol + kcol - kernel.size / 2;
+					rindex = irow + krow - half_band;
+					cindex = icol + kcol - half_band;
 					
 					// simulate padded borders
 					if(rindex < 0){

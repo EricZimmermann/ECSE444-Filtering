@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include "image.h"
 
-
+// adapted from https://github.com/rosevoul/nlm-image-denoising/blob/master/cuda/nlm_naive/nlmNaiveKernel.cu
 void nlm(struct Image input, struct Image output, uint8_t window_band, uint8_t nb_band, float sigma){
 
 	uint8_t ix, iy, wx, wy, nbx, nby; 		// iterables

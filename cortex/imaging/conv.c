@@ -29,13 +29,13 @@ void convolve(struct Image input, struct Image output, struct Kernel kernel){
 					// simulate padded borders
 					if(rindex < 0){
 						rindex = 0;
-					}else if(rindex > kernel.size -1){
-						rindex = kernel.size -1;
+					}else if(rindex > input.size -1){
+						rindex = input.size -1;
 					}
 					if(cindex < 0){
 						cindex = 0;
-					}else if(cindex > kernel.size -1){
-						cindex = kernel.size -1;
+					}else if(cindex > input.size -1){
+						cindex = input.size -1;
 					}
 
 					// convolve 

@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include "image.h"
 
-// adapted from https://github.com/rosevoul/nlm-image-denoising/blob/master/cuda/nlm_naive/nlmNaiveKernel.cu
+// adapted from https://github.com/rosevoul/nlm-image-denoising/blob/master/cuda/nlm_naive/nlmNaiveKernel.cuda
 void nlm(struct Image input, struct Image output, uint8_t window_band, uint8_t nb_band, float sigma){
 
 	uint8_t ix, iy, wx, wy, nbx, nby; 		// iterables
@@ -25,7 +25,7 @@ void nlm(struct Image input, struct Image output, uint8_t window_band, uint8_t n
 				for(wx = -window_band; wx <= window_band; ++wx){
 
 					// validate img boundaries -  stack friendly
-					if(ix + wx > input.size || iy + wy > input.size){
+					if(ix + wx >= input.size || iy + wy >= input.size){
 						continue;
 					}
 					if(ix + wx < 0 || iy + wy < 0){
@@ -39,16 +39,16 @@ void nlm(struct Image input, struct Image output, uint8_t window_band, uint8_t n
 						for(nbx = -nb_band; nbx <= nb_band; ++nbx){
 										
 							// validate img boundaries -  stack friendly
-							if (ix + wx + nbx < 0 || ix + wx + nbx >= N){
+							if (ix + wx + nbx < 0 || ix + wx + nbx >= input.size){
 								continue;
 							} 
-							if(iy + wy + nby < 0 || iy + wy + nby >= N){
+							if(iy + wy + nby < 0 || iy + wy + nby >= input.size){
 								continue;
 							}
-							if(ix + nbx < 0 || ix + nbx >= N){
+							if(ix + nbx < 0 || ix + nbx >= input.size){
 								continue;
 							}
-							if(iy + nby < 0 || iy + nby >= N){
+							if(iy + nby < 0 || iy + nby >= input.size){
 								continue;
 							}
 
@@ -62,11 +62,11 @@ void nlm(struct Image input, struct Image output, uint8_t window_band, uint8_t n
 
 					weight = expf( -1.0 * (dist / sigma + (wx*wx + wy*wy) / (float)((window_band + 1)*(window_band + 1))));
 					sum += weight;
-					value += input.data[iy + wy + nby][ix + wx + nbx] * weight;				
+					value += input.data[iy + wy][ix + wx] * weight;				
 				}
 			}
 
-			input.data[iy][ix] = value / sum;
+			output.data[iy][ix] = value / sum;
 		}
 	}
 }

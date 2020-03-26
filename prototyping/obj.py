@@ -22,7 +22,23 @@ class CImage():
         self.re = np.zeros_like(self.re)
         self.im = np.zeros_like(self.im)
 
-
+# https://medium.com/@y1017c121y/python-computer-vision-tutorials-image-fourier-transform-part-3-e65d10be4492
+class Hamming():
+    def __init__(self, size):
+        self.size = size
+        self.data = np.zeros((size,size))
+        self.band = np.zeros(size)
+    
+    def generateFilter(self, r):
+        # 1d hamming
+        for i in range(self.size):
+            self.band[i] = 0.54 - 0.46*np.cos((2* np.pi * i) / self.size)
+        
+        # matrix iterator
+        for i in range(self.size):
+            for j in range(self.size):
+                self.data[i][j] = np.sqrt(self.band[i] * self.band[j]) ** r
+                        
 class Kernel():
     def __init__(self, size):
         self.size = size

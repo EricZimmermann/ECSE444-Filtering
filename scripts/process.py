@@ -9,7 +9,7 @@ def save(image, filepath):
 	with open(filepath, "w") as output:
     	output.write(str(image))
 
- def listify(image):
+def listify(image):
  	return image.flatten().tolist()
 
 def fuzz(image, ranges, p=0.15):

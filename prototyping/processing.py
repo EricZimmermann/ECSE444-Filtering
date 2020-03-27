@@ -24,7 +24,7 @@ def convolve(input, output, kernel):
 
 
 def fft(input, output):
-    PI  = 3.14159265
+    PI  = np.pi
     norm = input.size * input.size
 
     for v in range(input.size):
@@ -40,17 +40,15 @@ def fft(input, output):
             output.re[v][u] /= norm
             output.im[v][u] /= norm
 
-#shift by 1 issue
 def ifft(input, output):
-    PI  = 3.14159265
-    norm = input.size * input.size;
-
+    PI  = np.pi
+    
     for y in range(input.size):
         for x in range(input.size):
             for v in range(input.size):
                 for u in range(input.size):
                     modulator = 2.0 * PI * ((1.0 * u * x + 1.0 * v * y) / input.size)
-                    output.data[input.size - y - 1][input.size - x - 1] += input.re[v][u] * np.cos(modulator) + input.im[v][u] * np.sin(modulator)
+                    output.data[y][x] += input.re[v][u] * np.cos(modulator) - input.im[v][u] * np.sin(modulator)
                     
 def lowpass(cimage, filter):
     for i in range(cimage.size):
@@ -60,9 +58,6 @@ def lowpass(cimage, filter):
 
 # TODO
 def shift(input):
-    return input
-
-def unshift(input):
     return input
 
 # Leverage np slicing (not C native) ~ used strictly as a util

@@ -54,7 +54,7 @@ void ifft(struct CImage input, struct Image output){
 			for(v = 0; v < input.size; ++v){
 				for(u = 0; u < input.size; ++u){
 					modulator = 2.0 * PI * ((1.0 * u * x + 1.0 * v * y) / input.size);
-					output.data[input.size-y-1][input.size-x-1] += input.re[v][u] * cosf(modulator) + input.im[v][u] * sinf(modulator);
+					output.data[input.size-y-1][input.size-x-1] += input.re[v][u] * cosf(modulator) - input.im[v][u] * sinf(modulator);
 				}
 			}
 		}

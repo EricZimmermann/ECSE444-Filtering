@@ -1,5 +1,6 @@
 import numpy as np
 
+# Generic 
 def convolve(input, output, kernel):
 
     half_band = kernel.size // 2
@@ -11,6 +12,7 @@ def convolve(input, output, kernel):
                     rindex = irow + krow - half_band
                     cindex = icol + kcol - half_band
 
+                    # edge padding via px extension
                     if(rindex < 0):	
                         rindex = 0
                     if(rindex > input.size -1):
@@ -22,7 +24,7 @@ def convolve(input, output, kernel):
 
                     output.data[irow][icol] += kernel.data[krow][kcol] * input.data[rindex][cindex]
 
-
+# Naive
 def fft(input, output):
     PI  = np.pi
     norm = input.size * input.size
@@ -40,6 +42,7 @@ def fft(input, output):
             output.re[v][u] /= norm
             output.im[v][u] /= norm
 
+# Naive
 def ifft(input, output):
     PI  = np.pi
     
@@ -50,15 +53,42 @@ def ifft(input, output):
                     modulator = 2.0 * PI * ((1.0 * u * x + 1.0 * v * y) / input.size)
                     output.data[y][x] += input.re[v][u] * np.cos(modulator) - input.im[v][u] * np.sin(modulator)
                     
+# Cooley-Tukey Implementation
+                    
+                    
+                    
+#LPS via multiplicative fourier                   
 def lowpass(cimage, filter):
     for i in range(cimage.size):
         for j in range(cimage.size):
             cimage.re[i][j] *= filter.data[i][j]
             cimage.im[i][j] *= filter.data[i][j]
 
-# TODO
-def shift(input):
-    return input
+# Regular and inplace implementations below ~ no safety
+# C implementation for inplace shift can be improved via passing by ref
+def shift(input, output=None, inplace=True):
+    def _swap(data, y_in, x_in, y_out, x_out):
+        temp = data[y_in][x_in]
+        data[y_in][x_in] = data[y_out][x_out]
+        data[y_out][x_out] = temp
+        
+    quad = input.size // 2
+    if inplace:
+        for y in range(quad):
+            for x in range(quad):
+                _swap(input.data, y, x, y+quad, x+quad)
+                _swap(input.data, y+quad, x, y, x+quad)
+    else:
+        for y in range(input.size):
+            for x in range(input.size):
+                if(x >= quad and y >= quad):
+                    output.data[y][x] = input.data[y-quad][x-quad]
+                if(x < quad and y < quad):
+                    output.data[y][x] = input.data[y+quad][x+quad]
+                if(x >= quad and y < quad):
+                    output.data[y][x] = input.data[y+quad][x-quad]
+                if(x < quad and y >= quad):
+                    output.data[y][x] = input.data[y-quad][x+quad]
 
 # Leverage np slicing (not C native) ~ used strictly as a util
 def quickShift(image):

@@ -4,7 +4,7 @@ import numpy
 def loadImage(filepath):
 	return cv2.imread(filepath, cv2.IMREAD_GRAYSCALE)
 
-def save(image, filepath):
+def saveTxt(image, filepath):
 	image_stream = listify(image)
 	with open(filepath, "w") as output:
     	output.write(str(image))

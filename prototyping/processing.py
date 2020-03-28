@@ -167,11 +167,11 @@ def _ctfft(re, im, base, d):
             c2 = -c2
         c1 = np.sqrt((1.0 + c1) / 2.0)
 
-        if d ==1: 
-            for i in range(size):
-                re[i] /= float(size)
-                im[i] /= float(size)
-        
+    if d ==1: 
+        for i in range(size):
+            re[i] /= float(size)
+            im[i] /= float(size)
+
 #LPS via multiplicative fourier                   
 def lowpass(cimage, filter):
     for i in range(cimage.size):

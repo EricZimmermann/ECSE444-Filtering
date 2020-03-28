@@ -52,11 +52,126 @@ def ifft(input, output):
                 for u in range(input.size):
                     modulator = 2.0 * PI * ((1.0 * u * x + 1.0 * v * y) / input.size)
                     output.data[y][x] += input.re[v][u] * np.cos(modulator) - input.im[v][u] * np.sin(modulator)
-                    
+                
 # Cooley-Tukey Implementation
-                    
-                    
-                    
+def ct_fft(input):
+    _ct(input, 1)
+    
+def ct_ifft(input):
+    _ct(input, 0)
+    
+def _ct(input, d):
+    
+    # buffers ~ malloc or prealloc and pass in
+    buffer_re = np.zeros(input.size)
+    buffer_im = np.zeros(input.size)
+    
+    # base
+    base = int(np.log2(input.size))
+    
+    # row - col bit reversal dft
+    for y in range(input.size):
+        for x in range(input.size):
+            buffer_re[x] = input.re[y][x]
+            buffer_im[x] = input.im[y][x]
+        
+        _ctfft(buffer_re, buffer_im, base, d)
+        
+        for x in range(input.size):
+            input.re[y][x] = buffer_re[x]
+            input.im[y][x] = buffer_im[x]
+    
+    for x in range(input.size):
+        for y in range(input.size):
+            buffer_re[y] = input.re[y][x]
+            buffer_im[y] = input.im[y][x]
+          
+        _ctfft(buffer_re, buffer_im, base, d)
+
+        for y in range(input.size):
+            input.re[y][x] = buffer_re[y]
+            input.im[y][x] = buffer_im[y]
+    
+    
+
+def _ctfft(re, im, base, d):
+    
+    # init vars
+    size = 0
+    
+    #iterators
+    i = 0
+    j = 0
+    k = 0
+    
+    # temps for bit reversals
+    temp_re = 0.0
+    temp_im = 0.0
+
+    i1 = 0
+    i2 = 0
+    l = 0
+    l1 = 0
+    l2 = 0
+    c1 = 0.0
+    c2 = 0.0
+
+    t1 = 0.0
+    t2 = 0.0
+    u1 = 0.0
+    u2 = 0.0
+    z = 0.0
+    
+    size = 2 ** base
+
+    i2 = size >> 1;
+    for i in range(size-1):
+        if (i < j):
+            temp_re = re[i]
+            temp_im = im[i]
+            re[i] = re[j]
+            im[i] = im[j]
+            re[j] = temp_re
+            im[j] = temp_im
+        k = i2;
+        while (k <= j):
+            j -= k
+            k >>= 1
+
+        j += k;
+
+    c1 = -1.0
+    c2 = 0.0
+    l2 = 1
+    for l in range(base):
+        l1 = l2
+        l2 <<= 1
+        u1 = 1.0
+        u2 = 0.0
+        for j in range(l1):
+            for i in range(j,size,l2):
+                i1 = i + l1
+                t1 = u1 * re[i1] - u2 * im[i1]
+                t2 = u1 * im[i1] + u2 * re[i1]
+                re[i1] = re[i] - t1
+                im[i1] = im[i] - t2
+                re[i] += t1
+                im[i] += t2
+                
+            z =  u1 * c1 - u2 * c2
+            u2 = u1 * c2 + u2 * c1
+            u1 = z
+        
+        c2 = np.sqrt((1.0 - c1) / 2.0)
+        if d ==1:
+            c2 = -c2
+        c1 = np.sqrt((1.0 + c1) / 2.0)
+
+        if d ==1: 
+            for i in range(size):
+                re[i] /= float(size)
+                im[i] /= float(size)
+        
 #LPS via multiplicative fourier                   
 def lowpass(cimage, filter):
     for i in range(cimage.size):

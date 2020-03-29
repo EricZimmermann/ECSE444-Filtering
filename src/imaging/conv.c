@@ -11,12 +11,12 @@ void convolve(struct Image input, struct Image output, struct Kernel kernel){
 	uint8_t irow, icol;
 	uint8_t krow, kcol;
 	uint8_t half_band = kernel.size / 2;
-	int rindex;
-	int cindex
+	int rindex;     // can overflow if unsigned
+	int cindex      // can overflow if unsigned
 
 	// image iterables
 	for(irow  = 0, irow < input.size; ++irow){
-		for(  = 0, icol < input.size; ++icol){
+		for(icol = 0, icol < input.size; ++icol){
 	
 			// kernel iterables
 			for(krow = 0; krow < kernel.size; ++krow){
@@ -26,15 +26,17 @@ void convolve(struct Image input, struct Image output, struct Kernel kernel){
 					rindex = irow + krow - half_band;
 					cindex = icol + kcol - half_band;
 					
-					// simulate padded borders
+                    // simulate padded borders via px extention
 					if(rindex < 0){
 						rindex = 0;
-					}else if(rindex > input.size -1){
+					}
+                    if(rindex > input.size -1){
 						rindex = input.size -1;
 					}
 					if(cindex < 0){
 						cindex = 0;
-					}else if(cindex > input.size -1){
+					}
+                    if(cindex > input.size -1){
 						cindex = input.size -1;
 					}
 

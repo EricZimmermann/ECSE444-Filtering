@@ -5,6 +5,7 @@ dynamic generation
 
 #include <stdlib.h>
 #include <math.h>
+# define PI 3.14
 
 struct Kernel{
 	uint8_t size;
@@ -26,7 +27,27 @@ void deinitKernel(struct Kernel kernel){
 	free(kernel.data);
 }
 
-void generateFilter(struct Kernel kernel, sigma){    
+void generateHammingFilter(struct Kernel kernel, r){
+    
+    // hamming coeff cache
+    float *band = (float *)malloc(kernel.size * sizeof(float));
+    
+    // generate 1D coeff
+    for(uint16_t i = 0; i < kernel.size; ++i){
+        band[i] = 0.54 - 0.46 * cosf((2* PI * i) / kernel.size)
+    }
+    
+    // generate kernel matrix coeff
+    for(uint16_t y = 0; y < kernel.size; ++y){
+        for(uint16_t x = 0; x < kernel.size; ++x){
+            kernel.data[y][x] = pow(sqrt(band[y] * band[x]), r);
+        }
+    }
+    
+    free(band);       
+}
+
+void generateGaussianFilter(struct Kernel kernel, sigma){    
 	
 	float sum = 0;
 	uint8_t half_band = kernel.size / 2;

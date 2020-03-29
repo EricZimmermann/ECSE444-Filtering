@@ -55,12 +55,13 @@ def ifft(input, output):
                 
 # Cooley-Tukey Implementation
 def ct_fft(input):
-    _ct(input, 1)
+    _ctrc(input, 1)
     
 def ct_ifft(input):
-    _ct(input, 0)
-    
-def _ct(input, d):
+    _ctrc(input, 0)
+
+# row-col fft divisions for divide and conquer
+def _ctrc(input, d):
     
     # buffers ~ malloc or prealloc and pass in
     buffer_re = np.zeros(input.size)
@@ -75,7 +76,7 @@ def _ct(input, d):
             buffer_re[x] = input.re[y][x]
             buffer_im[x] = input.im[y][x]
         
-        _ctfft(buffer_re, buffer_im, base, d)
+        _ctft(buffer_re, buffer_im, base, d)
         
         for x in range(input.size):
             input.re[y][x] = buffer_re[x]
@@ -86,15 +87,16 @@ def _ct(input, d):
             buffer_re[y] = input.re[y][x]
             buffer_im[y] = input.im[y][x]
           
-        _ctfft(buffer_re, buffer_im, base, d)
+        _ctft(buffer_re, buffer_im, base, d)
 
         for y in range(input.size):
             input.re[y][x] = buffer_re[y]
             input.im[y][x] = buffer_im[y]
     
     
-
-def _ctfft(re, im, base, d):
+# TODO refactor his section 
+# 1D ct ft
+def _ctft(re, im, base, d):
     
     # init vars
     size = 0
@@ -218,3 +220,109 @@ def quickShift(image):
     shifted[quad:, :quad] = image[:quad, quad:]
    
     return shifted
+
+
+
+# Trig recursive decimation ~ error
+
+# def _ctftu(re, im, size, pos):
+    
+#     fundamental_modulator = 2*np.pi / size
+#     step = size // 2
+#     re_cache = [0, 0]
+#     im_cache = [0, 0]
+    
+#     if size > 1:
+#         for idx in range(step):
+#             # modulation
+#             modulator = idx * fundamental_modulator
+#             re_modulation = np.cos(modulator)
+#             im_modulation = -np.sin(modulator)
+            
+#             # cache
+#             re_cache[0] = re[pos+idx]
+#             re_cache[1] = re[pos+idx+step]
+#             im_cache[0] = im[pos+idx]
+#             im_cache[1] = im[pos+idx+step]
+            
+#             # complex comps
+#             re[pos+idx] = re_cache[0] + re_cache[1]
+#             im[pos+idx] = im_cache[0] + im_cache[1]
+#             re[pos+idx+step] = re_cache[0] - re_cache[1]
+#             im[pos+idx+step] = im_cache[0] - im_cache[1]
+#             re[pos+idx+step] = re_modulation*re[pos+idx+step] - im_modulation*im[pos+idx+step]
+#             im[pos+idx+step] = re_modulation*im[pos+idx+step] + im_modulation*re[pos+idx+step]
+            
+#         # log2 decimation dft
+#         _ctft(re, im, step, pos)
+#         _ctft(re, im, step, pos + step)
+        
+# def _bitrev(re, im, size):
+#     idx = 0
+#     jdx = 0
+#     mask = 0
+#     temp_re = 0
+#     temp_im = 0
+    
+#     for jdx in range(size-1):
+#         mask = size >> 1
+#         while(True):
+#             if not (mask > idx):
+#                 break
+#             idx ^= mask
+#             mask >>= 1
+                
+#         if(jdx > idx):
+#             temp_re = re[idx]
+#             temp_im = im[idx]
+#             re[idx] = re[jdx]
+#             im[idx] = im[jdx]
+#             re[jdx] = temp_re
+#             im[jdx] = temp_im
+                        
+# def _conj(im, size, norm=False):
+#     for idx in range(size):
+#         im[idx] *= -1
+
+# def _ctft(re, im, size, d):
+#     if d ==0:
+#         _conj(im, size)
+        
+#     _ctftu(re, im, size, 0)
+#     _bitrev(re, im, size)
+        
+#     if d ==0:
+#         _conj(im, size)
+#         for idx in range(size):
+#             re[idx] /= size
+#             im[idx] /= size
+            
+# # row-col fft divisions for divide and conquer
+# def _ctrc(input, d):
+    
+#     # buffers ~ malloc or prealloc and pass in
+#     buffer_re = np.zeros(input.size)
+#     buffer_im = np.zeros(input.size)
+    
+#     # row - col bit reversal dft
+#     for y in range(input.size):
+#         for x in range(input.size):
+#             buffer_re[x] = input.re[y][x]
+#             buffer_im[x] = input.im[y][x]
+        
+#         _ctft(buffer_re, buffer_im, input.size, d)
+        
+#         for x in range(input.size):
+#             input.re[y][x] = buffer_re[x]
+#             input.im[y][x] = buffer_im[x]
+    
+#     for x in range(input.size):
+#         for y in range(input.size):
+#             buffer_re[y] = input.re[y][x]
+#             buffer_im[y] = input.im[y][x]
+          
+#         _ctft(buffer_re, buffer_im, input.size, d)
+
+#         for y in range(input.size):
+#             input.re[y][x] = buffer_re[y]
+#             input.im[y][x] = buffer_im[y]

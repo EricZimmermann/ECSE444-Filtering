@@ -222,10 +222,11 @@ def quickShift(image):
     return shifted
 
 
+##############################################   TEST    ########################################################
 
-# Trig recursive decimation ~ error
-
-# def _ctftu(re, im, size, pos):
+# # Trig recursive decimation ~ error ~ bit reversal still scrambled ~ shift , must be done recursively over block 
+# # ABANDON
+# def _ctftu(re, im, size, pos, stride, rev):
     
 #     fundamental_modulator = 2*np.pi / size
 #     step = size // 2
@@ -254,33 +255,18 @@ def quickShift(image):
 #             im[pos+idx+step] = re_modulation*im[pos+idx+step] + im_modulation*re[pos+idx+step]
             
 #         # log2 decimation dft
-#         _ctft(re, im, step, pos)
-#         _ctft(re, im, step, pos + step)
+#         _ctftu(re, im, size//2, pos, 2*stride, rev)
+#         _ctftu(re, im, size//2, pos+step, 2*stride, rev+stride)
         
-# def _bitrev(re, im, size):
-#     idx = 0
-#     jdx = 0
-#     mask = 0
-#     temp_re = 0
-#     temp_im = 0
-    
-#     for jdx in range(size-1):
-#         mask = size >> 1
-#         while(True):
-#             if not (mask > idx):
-#                 break
-#             idx ^= mask
-#             mask >>= 1
-                
-#         if(jdx > idx):
-#             temp_re = re[idx]
-#             temp_im = im[idx]
-#             re[idx] = re[jdx]
-#             im[idx] = im[jdx]
-#             re[jdx] = temp_re
-#             im[jdx] = temp_im
+#     elif pos > rev:
+#             temp_re = re[pos]
+#             temp_im = im[pos]
+#             re[pos] = re[rev]
+#             im[pos] = im[rev]
+#             re[rev] = temp_re
+#             im[rev] = temp_im
                         
-# def _conj(im, size, norm=False):
+# def _conj(im, size):
 #     for idx in range(size):
 #         im[idx] *= -1
 
@@ -288,8 +274,7 @@ def quickShift(image):
 #     if d ==0:
 #         _conj(im, size)
         
-#     _ctftu(re, im, size, 0)
-#     _bitrev(re, im, size)
+#     _ctftu(re, im, size, 0, 1, 0)
         
 #     if d ==0:
 #         _conj(im, size)

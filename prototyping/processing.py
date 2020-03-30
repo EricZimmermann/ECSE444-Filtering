@@ -136,7 +136,6 @@ def _ctft(re, im, size, d):
         for j in range(l1):
             mod_re = np.cos(mod)
             mod_im = np.sin(mod)
-            mod += base_mod
             
             for k in range(j, size, l2):
                 re_cache = mod_re * re[k + l1] - mod_im * im[k + l1]
@@ -145,6 +144,8 @@ def _ctft(re, im, size, d):
                 im[k + l1] = im[k] - im_cache
                 re[k] += re_cache
                 im[k] += im_cache
+                
+            mod += base_mod
     if d == 1: 
         for i in range(size):
             re[i] /= float(size)

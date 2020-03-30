@@ -94,7 +94,7 @@ def _ctrc(input, d):
             input.im[y][x] = buffer_im[y]
     
     
-# TODO refactor his section 
+# TODO refactor this section 
 # 1D ct ft
 def _ctft(re, im, base, d):
     
@@ -126,6 +126,7 @@ def _ctft(re, im, base, d):
     
     size = 2 ** base
 
+    # bit reversal
     i2 = size >> 1;
     for i in range(size-1):
         if (i < j):
@@ -142,6 +143,7 @@ def _ctft(re, im, base, d):
 
         j += k;
 
+    # fft
     c1 = -1.0
     c2 = 0.0
     l2 = 1
@@ -164,9 +166,10 @@ def _ctft(re, im, base, d):
             u2 = u1 * c2 + u2 * c1
             u1 = z
         
+        # compute radix-2 trig coef using known factorizations
         c2 = np.sqrt((1.0 - c1) / 2.0)
         if d ==1:
-            c2 = -c2
+            c2 = -c2   # modulation dir flipped
         c1 = np.sqrt((1.0 + c1) / 2.0)
 
     if d ==1: 
@@ -224,47 +227,57 @@ def quickShift(image):
 
 ##############################################   TEST    ########################################################
 
-# # Trig recursive decimation ~ error ~ bit reversal still scrambled ~ shift , must be done recursively over block 
-# # ABANDON
-# def _ctftu(re, im, size, pos, stride, rev):
-    
-#     fundamental_modulator = 2*np.pi / size
-#     step = size // 2
+
+# def _ctftu(re, im, N, q):
+#     fundamental_modulator = 2*np.pi / N
+#     m = N // 2
 #     re_cache = [0, 0]
 #     im_cache = [0, 0]
-    
-#     if size > 1:
-#         for idx in range(step):
+
+#     if N > 1:
+#         for p in range(m):
 #             # modulation
-#             modulator = idx * fundamental_modulator
+#             modulator = p * fundamental_modulator
 #             re_modulation = np.cos(modulator)
 #             im_modulation = -np.sin(modulator)
             
 #             # cache
-#             re_cache[0] = re[pos+idx]
-#             re_cache[1] = re[pos+idx+step]
-#             im_cache[0] = im[pos+idx]
-#             im_cache[1] = im[pos+idx+step]
+#             re_cache[0] = re[q+p]
+#             re_cache[1] = re[q+p+m]
+#             im_cache[0] = im[q+p]
+#             im_cache[1] = im[q+p+m]
             
 #             # complex comps
-#             re[pos+idx] = re_cache[0] + re_cache[1]
-#             im[pos+idx] = im_cache[0] + im_cache[1]
-#             re[pos+idx+step] = re_cache[0] - re_cache[1]
-#             im[pos+idx+step] = im_cache[0] - im_cache[1]
-#             re[pos+idx+step] = re_modulation*re[pos+idx+step] - im_modulation*im[pos+idx+step]
-#             im[pos+idx+step] = re_modulation*im[pos+idx+step] + im_modulation*re[pos+idx+step]
+#             re[q+p] = re_cache[0] + re_cache[1]
+#             im[q+p] = im_cache[0] + im_cache[1]
+#             re[q+p+m] = re_cache[0] - re_cache[1]
+#             im[q+p+m] = im_cache[0] - im_cache[1]
+#             re[q+p+m] = re_modulation*re[q+p+m] - im_modulation*im[q+p+m]
+#             im[q+p+m] = re_modulation*im[q+p+m] + im_modulation*re[q+p+m]
             
 #         # log2 decimation dft
-#         _ctftu(re, im, size//2, pos, 2*stride, rev)
-#         _ctftu(re, im, size//2, pos+step, 2*stride, rev+stride)
+#         _ctftu(re, im, N//2, q)
+#         _ctftu(re, im, N//2, q+m)
         
-#     elif pos > rev:
-#             temp_re = re[pos]
-#             temp_im = im[pos]
-#             re[pos] = re[rev]
-#             im[pos] = im[rev]
-#             re[rev] = temp_re
-#             im[rev] = temp_im
+# def bitReverse(re, im, size):
+    
+#     j = 0
+#     i2 = size >> 1;
+#     for i in range(size-1):
+#         if (i < j):
+#             temp_re = re[i]
+#             temp_im = im[i]
+#             re[i] = re[j]
+#             im[i] = im[j]
+#             re[j] = temp_re
+#             im[j] = temp_im
+#         k = i2;
+#         while (k <= j):
+#             j -= k
+#             k >>= 1
+
+#         j += k;
+
                         
 # def _conj(im, size):
 #     for idx in range(size):
@@ -273,8 +286,9 @@ def quickShift(image):
 # def _ctft(re, im, size, d):
 #     if d ==0:
 #         _conj(im, size)
-        
-#     _ctftu(re, im, size, 0, 1, 0)
+       
+#     _ctftu(re, im, size, 0)
+#     bitReverse(re, im, N)
         
 #     if d ==0:
 #         _conj(im, size)

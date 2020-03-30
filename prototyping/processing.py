@@ -66,17 +66,14 @@ def _ctrc(input, d):
     # buffers ~ malloc or prealloc and pass in
     buffer_re = np.zeros(input.size)
     buffer_im = np.zeros(input.size)
-    
-    # base
-    base = int(np.log2(input.size))
-    
+   
     # row - col bit reversal dft
     for y in range(input.size):
         for x in range(input.size):
             buffer_re[x] = input.re[y][x]
             buffer_im[x] = input.im[y][x]
         
-        _ctft(buffer_re, buffer_im, base, d)
+        _ctft(buffer_re, buffer_im, input.size, d)
         
         for x in range(input.size):
             input.re[y][x] = buffer_re[x]
@@ -87,96 +84,73 @@ def _ctrc(input, d):
             buffer_re[y] = input.re[y][x]
             buffer_im[y] = input.im[y][x]
           
-        _ctft(buffer_re, buffer_im, base, d)
+        _ctft(buffer_re, buffer_im, input.size, d)
 
         for y in range(input.size):
             input.re[y][x] = buffer_re[y]
             input.im[y][x] = buffer_im[y]
     
-    
-# TODO refactor this section 
 # 1D ct ft
-def _ctft(re, im, base, d):
+def _ctft(re, im, size, d):
     
-    # init vars
-    size = 0
+    # bit reverse iterables
+    rev_loc = 0
+    rev_i = 0
+    rev_j = 0
+    rev_k = 0  
     
-    #iterators
-    i = 0
-    j = 0
-    k = 0
-    
-    # temps for bit reversals
+    # temps
     temp_re = 0.0
     temp_im = 0.0
-
-    i1 = 0
-    i2 = 0
-    l = 0
-    l1 = 0
-    l2 = 0
-    c1 = 0.0
-    c2 = 0.0
-
-    t1 = 0.0
-    t2 = 0.0
-    u1 = 0.0
-    u2 = 0.0
-    z = 0.0
     
-    size = 2 ** base
-
     # bit reversal
-    i2 = size >> 1;
-    for i in range(size-1):
-        if (i < j):
-            temp_re = re[i]
-            temp_im = im[i]
-            re[i] = re[j]
-            im[i] = im[j]
-            re[j] = temp_re
-            im[j] = temp_im
-        k = i2;
-        while (k <= j):
-            j -= k
-            k >>= 1
+    reverse_loc = size >> 1;
+    for rev_i in range(size-1):
+        if (rev_i < rev_j):
+            temp_re = re[rev_i]
+            temp_im = im[rev_i]
+            re[rev_i] = re[rev_j]
+            im[rev_i] = im[rev_j]
+            re[rev_j] = temp_re
+            im[rev_j] = temp_im
+        rev_k = reverse_loc;
+        while (rev_k <= rev_j):
+            rev_j -= rev_k
+            rev_k >>= 1
 
-        j += k;
-
-    # fft
-    c1 = -1.0
-    c2 = 0.0
-    l2 = 1
-    for l in range(base):
+        rev_j += rev_k
+     
+    l1 = 0             # base power location 1
+    l2 = 1             # base power location 2
+    base_mod = 0       # freq subdivisor ~ count steps
+    mod = 0            # starting point
+    re_cache = 0.0     # cache real vals
+    im_cache = 0.0     # cache complex vals
+    for s in range(int(np.log2(size))):
         l1 = l2
         l2 <<= 1
-        u1 = 1.0
-        u2 = 0.0
+        base_mod = 2 * np.pi / l2
+        if d == 1:
+            base_mod *= -1
+        mod = 0.0
         for j in range(l1):
-            for i in range(j,size,l2):
-                i1 = i + l1
-                t1 = u1 * re[i1] - u2 * im[i1]
-                t2 = u1 * im[i1] + u2 * re[i1]
-                re[i1] = re[i] - t1
-                im[i1] = im[i] - t2
-                re[i] += t1
-                im[i] += t2
-                
-            z =  u1 * c1 - u2 * c2
-            u2 = u1 * c2 + u2 * c1
-            u1 = z
-        
-        # compute radix-2 trig coef using known factorizations
-        c2 = np.sqrt((1.0 - c1) / 2.0)
-        if d ==1:
-            c2 = -c2   # modulation dir flipped
-        c1 = np.sqrt((1.0 + c1) / 2.0)
-
-    if d ==1: 
+            mod_re = np.cos(mod)
+            mod_im = np.sin(mod)
+            mod += base_mod
+            
+            for k in range(j, size, l2):
+                re_cache = mod_re * re[k + l1] - mod_im * im[k + l1]
+                im_cache = mod_im * re[k + l1] + mod_re * im[k + l1]
+                re[k + l1] = re[k] - re_cache
+                im[k + l1] = im[k] - im_cache
+                re[k] += re_cache
+                im[k] += im_cache
+    if d == 1: 
         for i in range(size):
             re[i] /= float(size)
             im[i] /= float(size)
-
+            
+                
 #LPS via multiplicative fourier                   
 def lowpass(cimage, filter):
     for i in range(cimage.size):
@@ -223,105 +197,3 @@ def quickShift(image):
     shifted[quad:, :quad] = image[:quad, quad:]
    
     return shifted
-
-
-##############################################   TEST    ########################################################
-
-
-# def _ctftu(re, im, N, q):
-#     fundamental_modulator = 2*np.pi / N
-#     m = N // 2
-#     re_cache = [0, 0]
-#     im_cache = [0, 0]
-
-#     if N > 1:
-#         for p in range(m):
-#             # modulation
-#             modulator = p * fundamental_modulator
-#             re_modulation = np.cos(modulator)
-#             im_modulation = -np.sin(modulator)
-            
-#             # cache
-#             re_cache[0] = re[q+p]
-#             re_cache[1] = re[q+p+m]
-#             im_cache[0] = im[q+p]
-#             im_cache[1] = im[q+p+m]
-            
-#             # complex comps
-#             re[q+p] = re_cache[0] + re_cache[1]
-#             im[q+p] = im_cache[0] + im_cache[1]
-#             re[q+p+m] = re_cache[0] - re_cache[1]
-#             im[q+p+m] = im_cache[0] - im_cache[1]
-#             re[q+p+m] = re_modulation*re[q+p+m] - im_modulation*im[q+p+m]
-#             im[q+p+m] = re_modulation*im[q+p+m] + im_modulation*re[q+p+m]
-            
-#         # log2 decimation dft
-#         _ctftu(re, im, N//2, q)
-#         _ctftu(re, im, N//2, q+m)
-        
-# def bitReverse(re, im, size):
-    
-#     j = 0
-#     i2 = size >> 1;
-#     for i in range(size-1):
-#         if (i < j):
-#             temp_re = re[i]
-#             temp_im = im[i]
-#             re[i] = re[j]
-#             im[i] = im[j]
-#             re[j] = temp_re
-#             im[j] = temp_im
-#         k = i2;
-#         while (k <= j):
-#             j -= k
-#             k >>= 1
-
-#         j += k;
-
-                        
-# def _conj(im, size):
-#     for idx in range(size):
-#         im[idx] *= -1
-
-# def _ctft(re, im, size, d):
-#     if d ==0:
-#         _conj(im, size)
-       
-#     _ctftu(re, im, size, 0)
-#     bitReverse(re, im, N)
-        
-#     if d ==0:
-#         _conj(im, size)
-#         for idx in range(size):
-#             re[idx] /= size
-#             im[idx] /= size
-            
-# # row-col fft divisions for divide and conquer
-# def _ctrc(input, d):
-    
-#     # buffers ~ malloc or prealloc and pass in
-#     buffer_re = np.zeros(input.size)
-#     buffer_im = np.zeros(input.size)
-    
-#     # row - col bit reversal dft
-#     for y in range(input.size):
-#         for x in range(input.size):
-#             buffer_re[x] = input.re[y][x]
-#             buffer_im[x] = input.im[y][x]
-        
-#         _ctft(buffer_re, buffer_im, input.size, d)
-        
-#         for x in range(input.size):
-#             input.re[y][x] = buffer_re[x]
-#             input.im[y][x] = buffer_im[x]
-    
-#     for x in range(input.size):
-#         for y in range(input.size):
-#             buffer_re[y] = input.re[y][x]
-#             buffer_im[y] = input.im[y][x]
-          
-#         _ctft(buffer_re, buffer_im, input.size, d)
-
-#         for y in range(input.size):
-#             input.re[y][x] = buffer_re[y]
-#             input.im[y][x] = buffer_im[y]

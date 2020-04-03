@@ -8,20 +8,19 @@ dynamic generation
 # define PI 3.14
 
 struct Kernel{
-	uint8_t size;
+	uint16_t size;
 	float **data;
 }
 
-void initKernel(struct Kernel kernel, uint8_t size){
-	kernel.size = size;
-	kernel.data = malloc(size * sizeof(float *));
-	for(uint8_t row = 0; row < size; i++){
-		kernel.data[row] = malloc(size * sizeof(float));
+void initKernel(struct Kernel kernel, uint16_t size){
+	kernel.data = malloc(kernel.size * sizeof(float *));
+	for(uint16_t row = 0; row < kernel.size; i++){
+		kernel.data[row] = malloc(kernel.size * sizeof(float));
 	}
 }
 
 void deinitKernel(struct Kernel kernel){
-	for(uint8_t row = 0; row < kernel.size){
+	for(uint16_t row = 0; row < kernel.size){
 		free(kernel.data[row]);
 	}
 	free(kernel.data);
@@ -50,7 +49,7 @@ void generateHammingFilter(struct Kernel kernel, r){
 void generateGaussianFilter(struct Kernel kernel, sigma){    
 	
 	float sum = 0;
-	uint8_t half_band = kernel.size / 2;
+	uint8_t half_band = kernel.size >> 1;
     
     for (uint8_t i = - half_band; i <= half_band; i++) {
         for (uint8_t j = - half_band; j <= half_band; j++) {

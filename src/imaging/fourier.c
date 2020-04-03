@@ -7,6 +7,7 @@ cooley-tukey
 #include <stdlib.h>
 #include <math.h>
 #include "image.h"
+#include "utils.h"
 #define PI 3.14159265
 
 
@@ -14,8 +15,8 @@ cooley-tukey
 // Compute fft using naive dft
 void fft(struct Image input, struct CImage output){
 	
-	uint8_t v, u;             // wave components
-	uint8_t y, x;             // spatial component
+	uint16_t v, u;             // wave components
+	uint16_t y, x;             // spatial component
 	float modulator;
 	int norm = input.size * input.size;
 	
@@ -45,8 +46,8 @@ void fft(struct Image input, struct CImage output){
 // Compute ifft using naive dft
 void ifft(struct CImage input, struct Image output){
 	
-	uint8_t v, u;             // wave components
-	uint8_t y, x;             // spatial component
+	uint16_t v, u;             // wave components
+	uint16_t y, x;             // spatial component
 	float modulator;
 	float norm = input.size * input.size;
 		
@@ -78,7 +79,7 @@ void ctifft(struct CImage input){
 }
 
 // 2D decomp fft/ifft into row-col processes
-void _ctftrc(_ctftrc(struct CImage input, int direction){
+void _ctftrc(_ctftrc(struct CImage input, uint8_t direction){
     
     // iterators
     uint16_t x,y = 0;
@@ -86,10 +87,7 @@ void _ctftrc(_ctftrc(struct CImage input, int direction){
     // init buffers
     float *buffer_re = (float *)malloc(size * sizeof(float));
     float *buffer_im = (float *)malloc(size * sizeof(float));
-    
-    // get base size
-    int base = (int)log2f(input.size);
-    
+        
     // process fft axis-wise
     for(y = 0; y < input.size; ++y){
         // cache 
@@ -99,7 +97,7 @@ void _ctftrc(_ctftrc(struct CImage input, int direction){
         }
         
         // transform
-        _ctft(buffer_re, buffer_im, base, direction);
+        _ctft(buffer_re, buffer_im, input.size, direction);
         
         // replace
         for(x = 0; x < input.size; ++x){
@@ -117,7 +115,7 @@ void _ctftrc(_ctftrc(struct CImage input, int direction){
         }
         
         // transform
-        _ctft(buffer_re, buffer_im, base, direction);
+        _ctft(buffer_re, buffer_im, input.size, direction);
         
         // replace
         for(x = 0; x < input.size; ++x){
@@ -130,36 +128,82 @@ void _ctftrc(_ctftrc(struct CImage input, int direction){
     free(buffer_im);
 }
 
-// compute inplace complex to complex ft using radix-2 bit reversal decimation
-void _ctft(float **re, float **im, int base, int d){
-    // TODO following python refactor 
-}
-   
-             
-// inplace swap 2d element - O(1) space 
-void _swap2d(float **input, y_in, x_in, y_out, x_out){
-    temp = input[y_in][x_in];
-    input[y_in][x_in] = input[y_out][x_out];
-    input[y_out][x_out] = temp;
+void _bitReverse(float **re, float **im, uint16_t size){
+    uint16_t rev_loc = size >> 1;
+    uint16_t i, j, k = 0;
+    
+    for(i = 0; i < size - 1; ++i){
+        if(i < j){
+            swap1d(re, i, j);
+            swap1d(im, i, j);
+        }
+        k = rev_loc;
+        while(k <= j){
+            j -= k;
+            k >>= 1;
+        }
+        j += k;
+    }
 }
 
-// inplace swap 1d element - O(1) space
-void _swap1d(float *input, loc_in, loc_out){
-    temp = input[loc_in];
-    input[loc_in] = input[loc_out];
-    input[loc_out] = temp;
+// custom mod int of log base 2
+uint8_t _log2(uint16_t size){
+    uint8_t base = 0;
+    while(size != 1){
+        size >>= 2;
+        ++base;
+    }
+    return base;
 }
-             
-// Shift a spectra to be zero fq centered
-// Unshift a spectra to be non-zero shifted centered
-// Diagonalized quadrant swap
-void shift(float **input, int size){    
-    uint16_t = size / 2;
-    for(uint16_t y = 0; y < size / 2; ++y){
-        for(uint16_t x = 0; x < quad; ++x){
-            _swap2d(input, y, x, y + quad, x + quad);
-            _swap2d(input, y + quad, x, y, x + quad);
-        }        
+
+// compute inplace complex to complex ft using radix-2 bit reversal time decimation
+// https://en.wikipedia.org/wiki/Cooley%E2%80%93Tukey_FFT_algorithm#Data_reordering,_bit_reversal,_and_in-place_algorithms
+void _ctft(float **re, float **im, uint16_t size, uint8_t d){
+    
+    // delarations and inits 
+    uint8_t base = _log2(size);            // radix-2 division points
+    uint16_t l1 = 0;                       // radix-2 indexer
+    uint16_t l2 = 0;                       // radix-2 indexer
+    float mod, fmod, re_mod, im_mod = 0.0; // fq modulators
+    float re_cache, im_cache = 0.0;        // caches for complex computations
+    l2 = 1                                 // index step
+
+    // reverse bits for butterfly radix-2 comps
+    _bitReverse(re, im, size);
+    
+    for(uint16_t radix = 0; radix < base; ++radix){
+        l1 = l2;
+        l2 <<= 1;
+        
+        fmod = 2 * PI / l2;          // dtheta over interval
+        if(d == 1){
+            fmod *= -1;              // fft vs ifft select
+        }
+
+        mod = 0.0
+        for(uint16_t j = 0; j < l1; ++j){           // modulate
+            mod_re = cosf(mod);
+            mod_im = sinf(mod);
+            
+            for(uint16_t k = j; k < size; j += l2){   // compute
+                re_cache = mod_re * re[k + l1] - mod_im * im[k + l1];
+                im_cache = mod_im * re[k + l1] + mod_re * im[k + l1];
+                re[k + l1] = re[k] - re_cache;
+                im[k + l1] = im[k] - im_cache;
+                re[k] += re_cache;
+                im[k] += im_cache;
+            } 
+
+            mod += fmod;     // next step along fq theta = theta + dtheta
+        }
+    }
+
+    // normalize depending on direction
+    if (d == 1){ 
+        for(uint16 i = 0; i < size; ++i){
+            re[i] /= float(size)
+            im[i] /= float(size)
+        }
     }
 }
 

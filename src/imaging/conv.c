@@ -8,9 +8,9 @@ Convolutional operations
 void convolve(struct Image input, struct Image output, struct Kernel kernel){
 	
 
-	uint8_t irow, icol;
-	uint8_t krow, kcol;
-	uint8_t half_band = kernel.size / 2;
+	uint16_t irow, icol;
+	uint16_t krow, kcol;
+	uint16_t half_band = kernel.size >> 1;
 	int rindex;     // can overflow if unsigned
 	int cindex      // can overflow if unsigned
 

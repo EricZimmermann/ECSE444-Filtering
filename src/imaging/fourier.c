@@ -128,7 +128,7 @@ void _ctftrc(_ctftrc(struct CImage input, uint8_t direction){
     free(buffer_im);
 }
 
-void _bitReverse(float **re, float **im, uint16_t size){
+void _bitReverse(float *re, float *im, uint16_t size){
     uint16_t rev_loc = size >> 1;
     uint16_t i, j, k = 0;
     
@@ -158,7 +158,7 @@ uint8_t _log2(uint16_t size){
 
 // compute inplace complex to complex ft using radix-2 bit reversal time decimation
 // https://en.wikipedia.org/wiki/Cooley%E2%80%93Tukey_FFT_algorithm#Data_reordering,_bit_reversal,_and_in-place_algorithms
-void _ctft(float **re, float **im, uint16_t size, uint8_t d){
+void _ctft(float *re, float *im, uint16_t size, uint8_t d){
     
     // delarations and inits 
     uint8_t base = _log2(size);            // radix-2 division points

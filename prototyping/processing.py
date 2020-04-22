@@ -90,6 +90,21 @@ def _ctrc(input, d):
             input.re[y][x] = buffer_re[y]
             input.im[y][x] = buffer_im[y]
     
+def _bitrev(re, im, size):
+    rev_j = 0
+    for rev_i in range(size):
+        if (rev_i < rev_j):
+            temp_re = re[rev_i]
+            temp_im = im[rev_i]
+            re[rev_i] = re[rev_j]
+            im[rev_i] = im[rev_j]
+            re[rev_j] = temp_re
+            im[rev_j] = temp_im
+        bit = 1 + (rev_i ^ (rev_i + 1))
+        rev = size // bit
+        rev_j ^= size - rev
+
+    
 # 1D ct ft
 def _ctft(re, im, size, d):
     
@@ -103,22 +118,8 @@ def _ctft(re, im, size, d):
     temp_re = 0.0
     temp_im = 0.0
     
-    # bit reversal
-    reverse_loc = size >> 1;
-    for rev_i in range(size-1):
-        if (rev_i < rev_j):
-            temp_re = re[rev_i]
-            temp_im = im[rev_i]
-            re[rev_i] = re[rev_j]
-            im[rev_i] = im[rev_j]
-            re[rev_j] = temp_re
-            im[rev_j] = temp_im
-        rev_k = reverse_loc;
-        while (rev_k <= rev_j):
-            rev_j -= rev_k
-            rev_k >>= 1
-
-        rev_j += rev_k
+#     # bit reversal
+    _bitrev(re, im, size)
      
     l1 = 0             # base power location 1
     l2 = 1             # base power location 2

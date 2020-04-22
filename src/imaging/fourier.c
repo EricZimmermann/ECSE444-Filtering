@@ -129,20 +129,17 @@ void _ctftrc(_ctftrc(struct CImage input, uint8_t direction){
 }
 
 void _bitReverse(float *re, float *im, uint16_t size){
-    uint16_t rev_loc = size >> 1;
     uint16_t i, j, k = 0;
-    
-    for(i = 0; i < size - 1; ++i){
+    uint16_t bit = 0;
+
+    for(i; i < size; ++i){
         if(i < j){
             swap1d(re, i, j);
             swap1d(im, i, j);
         }
-        k = rev_loc;
-        while(k <= j){
-            j -= k;
-            k >>= 1;
-        }
-        j += k;
+        bit = 1 + (i^(i + 1));
+        k = size / bit;
+        j ^= size - k;
     }
 }
 

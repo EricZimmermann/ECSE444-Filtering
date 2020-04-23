@@ -1,0 +1,1 @@
+void logAction(short actionToLog);

@@ -26,16 +26,16 @@ int main(int argc, char* argv[]){
                 int j = 0;
                 
                 // This contains the whole image in a single string
-                struct Image img;
-                img = initImage(img, SIZE);
-
+                struct Image *img = malloc(sizeof(Image));
+                initImage(img, SIZE);
+                // printf("Yes");
                 // read the file
                 while (fgets(str, MAXCHAR, fp) != NULL){
                     char delim[] = ",";
                     char *ptr = strtok(str, delim);
                     for(i = 0; i < SIZE; i++){
                         for(j = 0; j < SIZE; j++){
-                            img.data[i][j] = (float) atoi(ptr);
+                            img -> data[i][j] = (float) atoi(ptr);
                             ptr = strtok(NULL, delim);
                         }
                     }
@@ -48,7 +48,7 @@ int main(int argc, char* argv[]){
                 for(i = 0; i < SIZE; i++){
                     for(j = 0; j < SIZE; j++){
                         char *tmp = malloc(128 * sizeof(char));
-                        sprintf(tmp, "%d", (int) img.data[i][j]), 
+                        sprintf(tmp, "%d", (int) img -> data[i][j]), 
                         strcat(result, tmp);
                         strcat(result, comma);
                         free(tmp);

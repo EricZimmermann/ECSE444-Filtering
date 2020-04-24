@@ -13,17 +13,16 @@ supports imgs of size max size unsigned short
 
 // allocate memory and zero init image
 
-struct Image initImage(struct Image image, short size){
-	image.size = size;
-	image.data = malloc(size * sizeof(float*));
+void initImage(struct Image *image, short size){
+	image -> size = size;
+	image -> data = malloc(size * sizeof(float*));
 
 	for(int row = 0; row < size; row++){
-		image.data[row] = malloc(size * sizeof(float));
-		for(int col = 0; col < image.size; col++){
-			image.data[row][col] = 0;
+		image -> data[row] = malloc(size * sizeof(float));
+		for(int col = 0; col < image -> size; col++){
+			image -> data[row][col] = 0;
 		}
 	}
-	return image;
 }
 
 // allocate memory for complex img representation
@@ -65,11 +64,11 @@ struct CImage resetCImage(struct CImage image){
 }
 
 // deallocate memory in image
-void deinitImage(struct Image image){
-	for(short row = 0; row < image.size; row++){
-		free(image.data[row]);
+void deinitImage(struct Image *image){
+	for(short row = 0; row < image -> size; row++){
+		free(image -> data[row]);
 	}
-	free(image.data);
+	free(image -> data);
 }
 
 

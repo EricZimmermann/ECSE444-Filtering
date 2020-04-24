@@ -19,7 +19,7 @@ typedef struct CImage{
 } CImage;
 
 // allocate memory and zero init image
-struct Image initImage(struct Image image, short size);
+void initImage(struct Image *image, short size);
 
 // allocate memory for complex img representation
 struct CImage initComplex(struct CImage image, short size);
@@ -31,7 +31,7 @@ struct Image resetImage(struct Image image);
 struct CImage resetCImage(struct CImage image);
 
 // deallocate memory in image
-void deinitImage(struct Image image);
+void deinitImage(struct Image *image);
 
 // deallocate memory for complex represenation
 void deinitCImage(struct CImage image);

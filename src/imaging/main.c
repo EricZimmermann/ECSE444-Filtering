@@ -1,9 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <image.h>
+#include <string.h>
 
 #define MAXCHAR 100000
-
+#define SIZE 128
 
 int main(int argc, char* argv[]){
     printf("Image processing \n");
@@ -21,12 +22,54 @@ int main(int argc, char* argv[]){
                     return 1;
                 }
                 int i = 0;
+                int j = 0;
+                
+                // This contains the whole image in a single string
+                struct Image img;
+                img = initImage(img, SIZE);
+
+                printf("%ld\n", sizeof(img));
+                
+                
+
+
+                // for(i = 0; i < SIZE; i++){
+                //     for(j = 0; j < SIZE; j++){
+                //         printf("%f \n", img.data[i][j]);
+                //     }
+                // }
+
+
+
+                // read the file
                 while (fgets(str, MAXCHAR, fp) != NULL){
-                    printf("%s\n", str);
-                    i++;
+                    // printf("%s\n", str);
+                    char delim[] = ",";
+                    char *ptr = strtok(str, delim);
+                    for(i = 0; i < SIZE; i++){
+                        for(j = 0; j < SIZE; j++){
+                            // printf("yes\n");
+                            img.data[i][j] = (float) atoi(ptr);
+                            ptr = strtok(NULL, delim);
+                        }
+                    }
+
+                    // while(ptr != NULL ) {
+                    //     printf( " %s\n", ptr);
+                    //     ptr = strtok(NULL, delim);
+                    // }
+
                 }
+
+                for(i = 0; i < SIZE; i++){
+                    for(j = 0; j < SIZE; j++){
+                        printf("%f \n", img.data[i][j]);
+                    }
+                }
+
                 fclose(fp);
-                printf("%d\n", i);
+
+                deinitImage(img);
                 break;
             case 'o':
                 printf("This is for the output\n");

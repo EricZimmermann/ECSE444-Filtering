@@ -12,15 +12,14 @@ parser.add_argument('--output', type=str, required=True)
 def main():
     
     args = parser.parse_args()
-    input_txt = utils.loadTxt(os.path.join(args.input, 'clean.txt'))
-    noisey_txt = utils.loadTxt(os.path.join(args.input, 'noise.txt'))
+    input_txt = utils.loadTxt(os.path.join(args.input, 'noise.txt'))
+    processed_txt = utils.loadTxt(os.path.join(args.input, 'noise.txt'))
     input_image = utils.txt2img(input_txt)
-    noisey_image = utils.txt2img(noisey_txt)
+    processed_image = utils.txt2img(processed_txt)
+    utils.saveImage(os.path.join(args.output, 'processed.jpg'), processed_image)
+    psnr = utils.psnr(input_image, processed_image)
     
-    # TODO
-    # Save img
-    # compute psnr
-    # print PSNR and log as json
+    #todo: write psnr to file produced my exec
     
 if __name__ == '__main__':
     main()

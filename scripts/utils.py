@@ -5,6 +5,9 @@ def loadImage(filepath, size):
     img =  cv2.imread(filepath, cv2.IMREAD_GRAYSCALE)
     return cv2.resize(img, (size, size))
 
+def saveImage(filepath, image):
+    cv2.imwrite(filepath, image)
+
 def saveTxt(image, filepath):
     image_stream = listify(image)
     with open(filepath, "w") as output:

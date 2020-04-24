@@ -45,14 +45,15 @@ void generateHammingFilter(struct Kernel *kernel, float r){
 void generateGaussianFilter(struct Kernel *kernel, float sigma){
 	float sum = 0;
 	short half_band = kernel -> size >> 1;
-    for (short i = -half_band; i < half_band; ++i) {
-        for (short j = -half_band; j < half_band; ++j) {
+    for (short i = -half_band; i <= half_band; ++i) {
+        for (short j = -half_band; j <= half_band; ++j) {
             kernel -> data[i + half_band][j + half_band] = expf(-1 * ((pow(i, 2) + pow(j, 2)) / ((2 * pow(sigma, 2))))); // unnormalized guassian
             sum += kernel -> data[i + half_band][j + half_band]; // normalization pooling
-            
         }
     }
-    for (short i = -half_band; i < half_band; ++i) {
+    
+
+    for (short i = -half_band; i <= half_band; ++i) {
         for (short j = -half_band; j < half_band; ++j) {
         	kernel-> data[i + half_band][j + half_band] /= sum;
         }

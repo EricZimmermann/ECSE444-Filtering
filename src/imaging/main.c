@@ -82,7 +82,7 @@ int main(int argc, char* argv[]){
 
                 // input arguments required: input image, size of image, sigma of kernel and size of kernel
                 // example:
-                // ./processmake -c /home/heqianw/Documents/git/ECSE444-Filtering/prototyping/clean.txt 128 2.2 128 3.5
+                // ./processmake -c /home/heqianw/Documents/git/ECSE444-Filtering/prototyping/clean.txt 128 0.2 5 3.5
                 
                 fp = fopen(argv[2], "r");
                 if(fp == NULL){
@@ -161,7 +161,8 @@ int main(int argc, char* argv[]){
                 deinitKernel(knl);
                 break;
             case 'f':
-                printf("This is for the fourier\n");
+                printf("This is for the Naive fourier Transform\n");
+
                 break;
         }
         argc--;

@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <stdlib.h>
+#include <time.h>
 
 // inplace swap 2d element - O(1) space 
 void swap2d(float **input, unsigned short y_in, unsigned short x_in, unsigned short y_out, unsigned short x_out){
@@ -31,7 +32,7 @@ void shift(float **input, int size){
     }
 }
 
-// Used as helper for logAction
+// Used by logger to verify whether log directory exists
 int logDirectoryExists()
 {
     struct stat stats;
@@ -42,6 +43,24 @@ int logDirectoryExists()
     if (S_ISDIR(stats.st_mode)) return 1;
 
     return 0;
+}
+
+// Used by logger to include timestamp in log
+char *getCurrTime() {
+    time_t current_time;
+    char* c_time_string;
+
+    /* Obtain current time. */
+    current_time = time(NULL);
+
+    if (current_time == ((time_t)-1)) return "Time Error";
+
+    /* Convert to local time format. */
+    c_time_string = ctime(&current_time);
+
+    if (c_time_string == NULL) return "Time Error";
+
+    return c_time_string;
 }
 
 // Called by the method of each action that requires logging
@@ -73,7 +92,12 @@ void logAction(short actionToLog) {
 
     if (strcmp("", logText) != 0) {
         FILE *fp = fopen(logFileName, "a");
+
+        char *currTime = getCurrTime();
+        printf(currTime);
+        fwrite(currTime, 1, strlen(currTime), fp);
         fwrite(logText, 1, strlen(logText), fp);
+
         fclose(fp);
     }
 

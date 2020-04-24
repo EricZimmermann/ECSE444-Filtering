@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <image.h>
+#include "image.h"
 
 #define MAXCHAR 100000
 

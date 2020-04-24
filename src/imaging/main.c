@@ -41,12 +41,31 @@ int main(int argc, char* argv[]){
                     }
                 }
 
-                // for(i = 0; i < SIZE; i++){
-                //     for(j = 0; j < SIZE; j++){
-                //         printf("%f \n", img.data[i][j]);
-                //     }
-                // }
+                // the int are usually under 256 & the comma and the +1 is for the null terminator
+                char *result = malloc(4 * SIZE * SIZE * sizeof(char) + 1);
+                int k = 0;
+                char comma[] = ",";
+                for(i = 0; i < SIZE; i++){
+                    for(j = 0; j < SIZE; j++){
+                        char *tmp = malloc(128 * sizeof(char));
+                        sprintf(tmp, "%d", (int) img.data[i][j]), 
+                        strcat(result, tmp);
+                        strcat(result, comma);
+                        free(tmp);
+                    }
+                }
 
+                result[strlen(result) - 1] = '\0';
+
+                // this is to write the outputs to a file
+                fp = fopen("output.txt", "rb+");
+                if(fp == NULL) //if file does not exist, create it
+                {
+                    fp = fopen("output.txt", "wb");
+                    fputs(result, fp);
+                }
+
+                free(result);
                 fclose(fp);
 
                 deinitImage(img);

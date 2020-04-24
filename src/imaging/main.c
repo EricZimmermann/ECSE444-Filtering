@@ -28,44 +28,23 @@ int main(int argc, char* argv[]){
                 struct Image img;
                 img = initImage(img, SIZE);
 
-                printf("%ld\n", sizeof(img));
-                
-                
-
+                // read the file
+                while (fgets(str, MAXCHAR, fp) != NULL){
+                    char delim[] = ",";
+                    char *ptr = strtok(str, delim);
+                    for(i = 0; i < SIZE; i++){
+                        for(j = 0; j < SIZE; j++){
+                            img.data[i][j] = (float) atoi(ptr);
+                            ptr = strtok(NULL, delim);
+                        }
+                    }
+                }
 
                 // for(i = 0; i < SIZE; i++){
                 //     for(j = 0; j < SIZE; j++){
                 //         printf("%f \n", img.data[i][j]);
                 //     }
                 // }
-
-
-
-                // read the file
-                while (fgets(str, MAXCHAR, fp) != NULL){
-                    // printf("%s\n", str);
-                    char delim[] = ",";
-                    char *ptr = strtok(str, delim);
-                    for(i = 0; i < SIZE; i++){
-                        for(j = 0; j < SIZE; j++){
-                            // printf("yes\n");
-                            img.data[i][j] = (float) atoi(ptr);
-                            ptr = strtok(NULL, delim);
-                        }
-                    }
-
-                    // while(ptr != NULL ) {
-                    //     printf( " %s\n", ptr);
-                    //     ptr = strtok(NULL, delim);
-                    // }
-
-                }
-
-                for(i = 0; i < SIZE; i++){
-                    for(j = 0; j < SIZE; j++){
-                        printf("%f \n", img.data[i][j]);
-                    }
-                }
 
                 fclose(fp);
 

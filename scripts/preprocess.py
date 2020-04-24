@@ -7,8 +7,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--input', type=str, required=True)
 parser.add_argument('--output', type=str, required=True)
 parser.add_argument('--size', type=int, required=True)
-parser.add_argument('--p-noise', type=float, required=False, default=0.5)
-parser.add_argument('--r-noise', type=float, required=False, default=5)
+parser.add_argument('--p-noise', type=float, required=False, default=0.8)
+parser.add_argument('--r-noise', type=float, required=False, default=15)
 
 def main():
     
@@ -16,6 +16,8 @@ def main():
     input_img = utils.loadImage(args.input, args.size)
     noisey_img = deepcopy(input_img)
     utils.fuzz(noisey_img, args.r_noise, args.p_noise)
+    utils.saveImage(os.path.join(args.output, 'clean.jpg'), input_img)
+    utils.saveImage(os.path.join(args.output, 'noise.jpg'), noisey_img)
     txt_img = utils.listify(input_img)
     txt_noise = utils.listify(noisey_img)
     utils.saveTxt(txt_img, os.path.join(args.output, 'clean.txt'))

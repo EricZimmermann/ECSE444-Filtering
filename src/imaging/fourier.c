@@ -40,6 +40,8 @@ void fft(struct Image input, struct CImage output){
 			output.im[v][u] /= norm;
 		}
 	}
+
+    logAction(1);
 }
 
 // https://www.originlab.com/doc/Origin-Help/InverseFFT2-Algorithm
@@ -62,6 +64,8 @@ void ifft(struct CImage input, struct Image output){
 			}
 		}
 	}
+
+    logAction(2);
 }
 
 // compute fft using cooly-tukey radix-2 bit reversal optims
@@ -123,6 +127,9 @@ void _ctftrc(_ctftrc(struct CImage input, uint8_t direction){
             input.im[y][x] = buffer_im[y];
         }
     }
+
+    if (direction == 1) logAction(3);
+    else logAction(4);
     
     free(buffer_re);
     free(buffer_im);

@@ -5,12 +5,22 @@ def loadImage(filepath, size):
     img =  cv2.imread(filepath, cv2.IMREAD_GRAYSCALE)
     return cv2.resize(img, (size, size))
 
+def saveImage(filepath, image):
+    cv2.imwrite(filepath, image)
+    
+def loadTxt(filepath):
+    return np.loadtxt(filepath, delimiter=',')
+
 def saveTxt(image, filepath):
     image_stream = listify(image)
     with open(filepath, "w") as output:
         for px in image_stream[:-1]:
             output.write(str(px)+',')
         output.write(str(image_stream[-1]))
+        
+def txt2img(string):
+    size = np.sqrt(len(text))
+    return string.reshape((size,size))
 
 def listify(image):
     flat = image.flatten()

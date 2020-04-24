@@ -9,7 +9,7 @@ Kernal struct prototype declarations
 typedef struct Kernel{
     short size;
     float **data;
-};
+}Kernel;
 
 // init and free
 void initKernel(struct Kernel *kernel, short size);

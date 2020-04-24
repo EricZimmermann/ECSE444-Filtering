@@ -7,13 +7,13 @@ Image struct prototype declarations
 
 
 typedef struct Image{
-	unsigned short size;
+	short size;
 	float **data;
 }Image;
 
 
 typedef struct CImage{
-	unsigned short size;
+	short size;
 	float **re;
 	float **im;
 } CImage;

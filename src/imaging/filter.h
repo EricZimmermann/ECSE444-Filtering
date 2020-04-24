@@ -7,14 +7,14 @@ Kernal struct prototype declarations
 
 // filter kernel
 typedef struct Kernel{
-    unsigned short size;
+    short size;
     float **data;
 };
 
 // init and free
-struct Kernel initKernel(struct Kernel kernel, unsigned short size);
-void deinitKernel(struct Kernel kernel);
+void initKernel(struct Kernel *kernel, short size);
+void deinitKernel(struct Kernel *kernel);
 
 // filter population
-struct Kernel generateHammingFilter(struct Kernel kernel, float r);
-struct Kernel generateGaussianFilter(struct Kernel kernel, float sigma);
+void generateHammingFilter(struct Kernel *kernel, float r);
+void generateGaussianFilter(struct Kernel *kernel, float sigma);

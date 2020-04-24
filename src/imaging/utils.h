@@ -1,8 +1,8 @@
 // swaps
-void swap2d(float **input, unsigned short y_in, unsigned short x_in, unsigned short y_out, unsigned short x_out);
-void swap1d(float *input, unsigned short loc_in, unsigned short loc_out);
+void swap2d(float **input, short y_in, short x_in, short y_out, short x_out);
+void swap1d(float *input, short loc_in, short loc_out);
 
 // spectrum visualizations
-void shift(float **input, int size);
+void shift(float **input, short size);
 
 void logAction(short actionToLog);

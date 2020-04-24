@@ -5,7 +5,7 @@ Convolutional operations
 #include "image.h"
 #include "filter.h"
 
-void convolve(struct Image input, struct Image output, struct Kernel kernel){
+struct Image convolve(struct Image input, struct Image output, struct Kernel kernel){
 
 	unsigned short irow, icol;
 	unsigned short krow, kcol;
@@ -45,4 +45,5 @@ void convolve(struct Image input, struct Image output, struct Kernel kernel){
 			}
 		}
 	}
+	return output;
 }

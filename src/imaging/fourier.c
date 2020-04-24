@@ -13,6 +13,8 @@ cooley-tukey
 #define PI 3.14159265
 
 // radix-2 bit reversal
+// im not sure if this works, we need to find a way to return both re and im. C doesn't work well with passing by reference
+// somehow its an operation with & that we are missing here i thin
 void _bitReverse(float *re, float *im, unsigned short size){
     unsigned short i, j, k = 0;
     unsigned short bit = 0;

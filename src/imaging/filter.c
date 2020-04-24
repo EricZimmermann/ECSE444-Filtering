@@ -8,11 +8,12 @@ dynamic generation
 #include "filter.h"
 #define PI 3.14159265
 
-void initKernel(struct Kernel kernel, unsigned short size){
+struct Kernel initKernel(struct Kernel kernel, unsigned short size){
 	kernel.data = malloc(kernel.size * sizeof(float *));
 	for(unsigned short row = 0; row < kernel.size; ++row){
 		kernel.data[row] = malloc(kernel.size * sizeof(float));
 	}
+    return kernel;
 }
 
 void deinitKernel(struct Kernel kernel){
@@ -22,7 +23,7 @@ void deinitKernel(struct Kernel kernel){
 	free(kernel.data);
 }
 
-void generateHammingFilter(struct Kernel kernel, float r){
+struct Kernel generateHammingFilter(struct Kernel kernel, float r){
     
     // hamming coeff cache
     float *band = (float *)malloc(kernel.size * sizeof(float));
@@ -39,10 +40,11 @@ void generateHammingFilter(struct Kernel kernel, float r){
         }
     }
     
-    free(band);       
+    free(band);
+    return kernel;       
 }
 
-void generateGaussianFilter(struct Kernel kernel, float sigma){
+struct Kernel generateGaussianFilter(struct Kernel kernel, float sigma){
 	
 	float sum = 0;
 	unsigned short half_band = kernel.size >> 1;
@@ -59,4 +61,5 @@ void generateGaussianFilter(struct Kernel kernel, float sigma){
         	kernel.data[i+half_band][j+half_band] /= sum;
         }
     }
+    return kernel;
 } 

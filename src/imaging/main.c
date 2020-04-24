@@ -51,17 +51,17 @@ int main(int argc, char* argv[]){
 
                 deinitImage(img);
                 break;
-            case 'o':
-                printf("This is for the output\n");
-                break;
             case 's':
-                printf("This is for the output\n");
+                printf("This is for the shift test\n");
                 break;
-            case 'p':
-                printf("This is for the output\n");
+            case 'k':
+                printf("This is for the kernel test\n");
                 break;
-            case 'r':
-                printf("This is for the output\n");
+            case 'c':
+                printf("This is for the convolution test\n");
+                break;
+            case 'f':
+                printf("This is for the fourier\n");
                 break;
         }
         argc--;

@@ -6,15 +6,15 @@ Kernal struct prototype declarations
 #include <stdio.h>
 
 // filter kernel
-struct Kernel{
+typedef struct Kernel{
     unsigned short size;
     float **data;
 };
 
 // init and free
-void initKernel(struct Kernel kernel, unsigned short size);
+struct Kernel initKernel(struct Kernel kernel, unsigned short size);
 void deinitKernel(struct Kernel kernel);
 
 // filter population
-void generateHammingFilter(struct Kernel kernel, float r);
-void generateGaussianFilter(struct Kernel kernel, float sigma);
+struct Kernel generateHammingFilter(struct Kernel kernel, float r);
+struct Kernel generateGaussianFilter(struct Kernel kernel, float sigma);

@@ -48,7 +48,7 @@ void fft(struct Image *input, struct CImage *output){
 	short v, u;             // wave components
 	short y, x;             // spatial component
 	float modulator;
-	float norm = input.size * input.size;
+	float norm = input -> size * input -> size;
 	
 	// accumulator
 	for(v = 0; v < input->size; ++v){
@@ -56,8 +56,8 @@ void fft(struct Image *input, struct CImage *output){
 			for(y = 0; y < input->size; ++y){
 				for(x = 0; x < input->size; ++x){
 					modulator = -2.0 * PI * ((1.0 * u * x + 1.0 * v * y) / input->size);
-					output.re[v][u] += input->data[y][x] * cosf(modulator);
-					output.im[v][u] += input->data[y][x] * sinf(modulator);
+					output -> re[v][u] += input->data[y][x] * cosf(modulator);
+					output -> im[v][u] += input->data[y][x] * sinf(modulator);
 				}
 			}
 		}
@@ -175,13 +175,13 @@ void _ctftrc(struct CImage *input, short direction){
     // alternate axis
     for(x = 0; x < input->size; ++x){
         // cache 
-        for(y = 0; y < input.size; ++y){
+        for(y = 0; y < input -> size; ++y){
             buffer_re[y] = input->re[y][x]; 
             buffer_im[y] = input->im[y][x];
         }
         
         // transform
-        _ctft(buffer_re, buffer_im, input.size, direction);
+        _ctft(buffer_re, buffer_im, input -> size, direction);
         
         // replace
         for(x = 0; x < input->size; ++x){

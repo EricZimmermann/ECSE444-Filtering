@@ -22,28 +22,28 @@ typedef struct CImage{
 void initImage(struct Image *image, short size);
 
 // allocate memory for complex img representation
-struct CImage initComplex(struct CImage image, short size);
+void initComplex(struct CImage *image, short size);
 
 // zero out content of image
-struct Image resetImage(struct Image image);
+void resetImage(struct Image *image);
 
 // zero out content of image
-struct CImage resetCImage(struct CImage image);
+void resetCImage(struct CImage *image);
 
 // deallocate memory in image
 void deinitImage(struct Image *image);
 
 // deallocate memory for complex represenation
-void deinitCImage(struct CImage image);
+void deinitCImage(struct CImage *image);
 
 // load entire image into structure
-struct Image loadImage(struct Image image, float *data_stream);
+void loadImage(struct Image *image, float *data_stream);
 
 // load entire image into complex structure
-struct CImage loadComplexImage(struct CImage image, float *data_stream);
+void loadComplexImage(struct CImage *image, float *data_stream);
 
 // load a single row into img structure
-struct Image loadRow(struct Image image, float *row_data, short index);
+void loadRow(struct Image *image, float *row_data, short index);
 
 // load a single row into complex img structure
-struct CImage loadComplexRow(struct CImage image, float *row_data, short index);
+void loadComplexRow(struct CImage *image, float *row_data, short index);

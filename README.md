@@ -23,7 +23,7 @@ Note: image size must be of base power 2: {2, 4, 16, 32, 64, 128, 256, 512}
 ## Steps to run Convolution (requires terminal):
 1. `cd src/imaging` (navigate into the directory containing the Makefile)
 2. `make processmake` (builds the executable)
-3. `./processmake -c <full path to the target directory containing input txt> <input txt filename> <size of img, eg: 32, 128> <sigma of kernel as float> <size of kernel eg: 3, 5, 7>
+3. `./processmake -c <full path to the target directory containing input txt> <input txt filename> <size of img> <sigma of kernel as float> <size of kernel eg: 3, 5, 7>`
 4. output.txt contains the resulting image and logging.txt contains the parameters we used (located in same directory as specified)
 
 Note: image size must be identical to that selected in preprocessing

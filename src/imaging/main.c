@@ -79,12 +79,6 @@ int main(int argc, char* argv[]){
 
                 deinitImage(img);
                 break;
-            case 's':
-                printf("This is for the shift test\n");
-                break;
-            case 'k':
-                printf("This is for the kernel test\n");
-                break;
             case 'c':
                 printf("This is for the Convolution test\n");
 
@@ -214,12 +208,12 @@ int main(int argc, char* argv[]){
                 initComplex(cImgInput, sizeImg);
                 loadComplexImage(cImgInput, datastream);
 
-                // compute FFT of the two images into the complex
-                fft(imgInput, cImgInput);
-
                 knl = malloc(sizeof(Kernel));
                 initKernel(knl, sizeImg);       
                 generateHammingFilter(knl, rValue);
+
+                // compute FFT of the two images into the complex
+                fft(imgInput, cImgInput);
 
                 // apply lowpass filter
                 lowPass(cImgInput, knl);
@@ -229,6 +223,95 @@ int main(int argc, char* argv[]){
                 
                 // inverse fft
                 ifft(cImgInput, imgOutput);
+
+                // the int are usually under 256 & the comma and the +1 is for the null terminator
+                result = malloc(4 * sizeImg * sizeImg * sizeof(char) + 1);
+                for(i = 0; i < sizeImg; i++){
+                    for(j = 0; j < sizeImg; j++){
+                        char *tmp = malloc(128 * sizeof(char));
+                        sprintf(tmp, "%d", (int) imgOutput -> data[j][i]), 
+                        strcat(result, tmp);
+                        strcat(result, comma);
+                        free(tmp);
+                    }
+                }
+
+                result[strlen(result) - 1] = '\0';
+
+                // this is to write the outputs to a file
+                fp = fopen("output.txt", "rb+");
+                if(fp == NULL) //if file does not exist, create it
+                {
+                    fp = fopen("output.txt", "wb");
+                    fputs(result, fp);
+                }
+
+                free(result);
+                fclose(fp);
+
+                deinitImage(imgInput);
+                deinitImage(imgOutput);
+                deinitKernel(knl);
+                break;
+
+            case 't':
+                
+                printf("This is for the Couley Turkey fourier Transform\n");
+                
+                // input arguments required: input image, size of image, sigma of kernel and size of kernel
+                // example:
+                // ./processmake -f /home/heqianw/Documents/git/ECSE444-Filtering/prototyping/clean.txt 128 3.5
+                
+                fp = fopen(argv[2], "r");
+                if(fp == NULL){
+                    printf("can't open file, please provide the full path\n");
+                    return 1;
+                }
+
+                sizeImg = atoi(argv[3]);
+                rValue = atof(argv[4]);
+
+                printf("Size of image: %d\n", sizeImg);
+                printf("Size of R value: %f\n", rValue);
+                datastream = malloc(sizeImg * sizeImg * sizeof(float));
+                
+                // This contains the whole image in a single string
+                // struct Image *img = malloc(sizeof(Image));
+                // initImage(img, SIZE);
+                // read the file
+
+                limit = sizeImg * sizeImg;
+
+                while (fgets(str, MAXCHAR, fp) != NULL){
+                    char *ptr = strtok(str, comma);
+                    for(i = 0; i < limit; i++){
+                        datastream[i] = atof(ptr);
+                        ptr = strtok(NULL, comma);
+                    }
+                }
+
+                // now that the image is in the datastream: load it into our struct
+                cImgInput = malloc(sizeof(CImage));
+                initComplex(cImgInput, sizeImg);
+                loadComplexImage(cImgInput, datastream);
+
+                knl = malloc(sizeof(Kernel));
+                initKernel(knl, sizeImg);       
+                generateHammingFilter(knl, rValue);
+                printf("At CTFFT\n");
+                // compute CTFFT of the image
+                ctftt(cImgInput);
+                printf("At lowpass\n");
+                // apply lowpass filter
+                lowPass(cImgInput, knl);
+
+                imgOutput = malloc(sizeof(Image));
+                initImage(imgOutput, sizeImg);
+                printf("At CTIFFT\n");
+                // inverse fft
+                ctifft(cImgInput);
+                imgOutput -> data = cImgInput -> re;
+
 
                 // the int are usually under 256 & the comma and the +1 is for the null terminator
                 result = malloc(4 * sizeImg * sizeImg * sizeof(char) + 1);

@@ -3,8 +3,10 @@
 *.txt
 *.ipynb
 *.jpg
+exp*
+*processmake
 
-# Prerequisites
+#Prerequisites
 *.d
 
 # Object files

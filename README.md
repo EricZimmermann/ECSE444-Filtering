@@ -52,3 +52,8 @@ Compute PSNR metrics and add to logging.txt, create .jpg for output.txt file
 2. logging.txt updated
 3. output.png created 
 
+## Automated Testing (at your own risk!)
+Runs a set of configs to compure batch ffts and persist info. Please edit configs before running or else! Run from root!
+
+`python scripts/autotest.py --input <full path to test img>`
+

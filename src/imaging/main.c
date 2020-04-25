@@ -306,36 +306,30 @@ int main(int argc, char* argv[]){
                 // apply quickshift to the kernel
                 shift(knl -> data, knl -> size);
 
-                printf("At CTFFT\n");
                 // compute CTFFT of the image
                 ctftt(cImgInput);
-                
-                printf("At lowpass\n");
+
                 // apply lowpass filter
                 lowPass(cImgInput, knl);
 
                 imgOutput = malloc(sizeof(Image));
                 initImage(imgOutput, sizeImg);
-                printf("At CTIFFT\n");
                 // inverse fft
                 ctifft(cImgInput);
-                imgOutput -> data = cImgInput -> re;
-
 
                 // the int are usually under 256 & the comma and the +1 is for the null terminator
-                result = malloc(4 * sizeImg * sizeImg * sizeof(char) + 1);
+                free(result);
+                result = malloc(5 * sizeImg * sizeImg * sizeof(char) + 1);
                 for(i = 0; i < sizeImg; i++){
                     for(j = 0; j < sizeImg; j++){
                         char *tmp = malloc(128 * sizeof(char));
-                        sprintf(tmp, "%d", (int) imgOutput -> data[j][i]), 
+                        sprintf(tmp, "%d", (int) cImgInput -> re[j][i]), 
                         strcat(result, tmp);
                         strcat(result, comma);
                         free(tmp);
                     }
                 }
-
                 result[strlen(result) - 1] = '\0';
-
                 // this is to write the outputs to a file
                 fp = fopen("output.txt", "rb+");
                 if(fp == NULL) //if file does not exist, create it
@@ -346,10 +340,6 @@ int main(int argc, char* argv[]){
 
                 free(result);
                 fclose(fp);
-
-                deinitImage(imgInput);
-                deinitImage(imgOutput);
-                deinitKernel(knl);
                 break;
         }
         argc--;

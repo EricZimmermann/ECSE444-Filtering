@@ -6,6 +6,7 @@ cooley-tukey
 
 #include <stdlib.h>
 #include <math.h>
+#include <string.h>
 #include "fourier.h"
 #include "filter.h"
 #include "image.h"
@@ -15,9 +16,9 @@ cooley-tukey
 // radix-2 bit reversal
 // im not sure if this works, we need to find a way to return both re and im. C doesn't work well with passing by reference
 // somehow its an operation with & that we are missing here i thin
-void _bitReverse(float *re, float *im, short size){
-    short i, j, k = 0;
-    short bit = 0;
+void bitReverse(float *re, float *im, unsigned short size){
+    unsigned short i, j, k = 0;
+    unsigned short bit = 0;
     
     for(i = 0; i < size; ++i){
         if(i < j){
@@ -31,7 +32,7 @@ void _bitReverse(float *re, float *im, short size){
 }
 
 // custom mod int of log base 2
-short _log2(short size){
+short customlog2(short size){
     short base = 0;
     while(size != 1){
         size >>= 1;
@@ -95,16 +96,39 @@ void ifft(struct CImage *input, struct Image *output){
 
 // compute inplace complex to complex ft using radix-2 bit reversal time decimation
 // https://en.wikipedia.org/wiki/Cooley%E2%80%93Tukey_FFT_algorithm#Data_reordering,_bit_reversal,_and_in-place_algorithms
-void _ctft(float *re, float *im, short size, short d){
+void ctft(float *re, float *im, short size, short d){
     // delarations and inits
-    short base = _log2(size);           // radix-2 division points
+    short base = customlog2(size);           // radix-2 division points
     short l1 = 0;                       // radix-2 indexer
     short l2 = 0;                       // radix-2 indexer
     float mod, fmod, mod_re, mod_im = 0.0;       // fq modulators
     float re_cache, im_cache = 0.0;              // caches for complex computations
     l2 = 1;                                      // index step
     // reverse bits for butterfly radix-2 comps
-    _bitReverse(re, im, size);
+    char comma[] = ",";
+
+    char *printable = malloc (5 * size * size * sizeof(char));
+    for(int i = 0; i < size*size; i++){
+        char *tmp = malloc(128 * sizeof(char));
+        sprintf(tmp, "%d", (int) re[i]), 
+        strcat(printable, tmp);
+        strcat(printable, comma);
+        free(tmp);
+    }
+    printf("%s\n", printable);
+    bitReverse(re, im, size);
+
+    free(printable);
+    printable = malloc (5 * size * size * sizeof(char));
+    for(int i = 0; i < size*size; i++){
+        char *tmp = malloc(128 * sizeof(char));
+        sprintf(tmp, "%d", (int) re[i]), 
+        strcat(printable, tmp);
+        strcat(printable, comma);
+        free(tmp);
+    }
+    printf("%s\n", printable);
+    exit(1);
     for(short radix = 0; radix < base; ++radix){
         l1 = l2;
         l2 <<= 1;
@@ -143,7 +167,7 @@ void _ctft(float *re, float *im, short size, short d){
 }
 
 // 2D decomp fft/ifft into row-col processes
-void _ctftrc(struct CImage *input, short direction){
+void ctftrc(struct CImage *input, short direction){
     
     // iterators
     short x,y = 0;
@@ -159,7 +183,7 @@ void _ctftrc(struct CImage *input, short direction){
             buffer_im[x] = input->im[y][x];
         }
         // transform
-        _ctft(buffer_re, buffer_im, input->size, direction);
+        ctft(buffer_re, buffer_im, input->size, direction);
         
         // replace
         for(x = 0; x < input->size; ++x){
@@ -177,7 +201,7 @@ void _ctftrc(struct CImage *input, short direction){
         }
         lpl++;
         // transform
-        _ctft(buffer_re, buffer_im, input -> size, direction);
+        ctft(buffer_re, buffer_im, input -> size, direction);
                 
 
         // replace
@@ -187,9 +211,8 @@ void _ctftrc(struct CImage *input, short direction){
             
         }
     }
-    printf("donezo\n");
-    free(buffer_re);
-    free(buffer_im);
+    // free(buffer_re);
+    // free(buffer_im);
 }
 
 
@@ -197,14 +220,14 @@ void _ctftrc(struct CImage *input, short direction){
 // assumes size is 2^n ~ row-col generalized fft
 // inplace ~ malloc sqrt(2N) buff space complexity
 void ctftt(struct CImage *input){
-    _ctftrc(input, 1);
+    ctftrc(input, 1);
 }
 
 // compute ifft using cooly-tukey radix-2  bit reversal optims
 // asumes size is 2^n ~ row-col generalized fft
 // inplace ~ malloc sqrt(2N) buff space complexity
 void ctifft(struct CImage *input){
-    _ctftrc(input, 0);
+    ctftrc(input, 0);
 }
 
 // apply a lps to a complex representation of an image

@@ -97,7 +97,7 @@ def main():
                 os.system(preprocess_arg)
                 
                 # process
-                conv_path = "./src/imaging/processmake -f "+dir_path + "/ noise.txt "+str(size)+" "+str(r)
+                conv_path = "./src/imaging/processmake -t "+dir_path + "/ noise.txt "+str(size)+" "+str(r)
                 os.system(conv_path)
                 
                 # postprocess

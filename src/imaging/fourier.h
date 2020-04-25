@@ -1,3 +1,5 @@
+#ifndef FOURIER_H
+#define FOURIER_H
 // public fucntions
 
 #include "image.h"
@@ -13,3 +15,5 @@ void ctifft(struct CImage *input);
 
 // filtering
 void lowPass(struct CImage *input, struct Kernel *filter);
+
+#endif

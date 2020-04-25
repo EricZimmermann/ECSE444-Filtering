@@ -1,3 +1,6 @@
+#ifndef IMAGE_H
+#define IMAGE_H
+
 /*
 Image struct prototype declarations
 */
@@ -47,3 +50,5 @@ void loadRow(struct Image *image, float *row_data, short index);
 
 // load a single row into complex img structure
 void loadComplexRow(struct CImage *image, float *row_data, short index);
+
+#endif

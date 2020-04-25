@@ -1,3 +1,5 @@
+#ifndef FILTER_H
+#define FILTER_H
 /*
 Kernal struct prototype declarations
 */
@@ -18,3 +20,5 @@ void deinitKernel(struct Kernel *kernel);
 // filter population
 void generateHammingFilter(struct Kernel *kernel, float r);
 void generateGaussianFilter(struct Kernel *kernel, float sigma);
+
+#endif

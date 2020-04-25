@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "conv.h"
-
+#include "fourier.h"
 
 #define MAXCHAR 100000
 #define SIZE 128
@@ -17,6 +17,14 @@ int main(int argc, char* argv[]){
     char comma[] = ",";
     float *datastream;
     char *result;
+    int sizeImg;
+    float rValue;
+    
+    struct Image *imgInput;
+    struct Image *imgOutput;
+    struct CImage *cImgInput;
+    struct Kernel *knl;
+    int limit;
     while((argc > 1) && (argv)){
         switch(argv[1][1]){
             case 'i':
@@ -49,7 +57,7 @@ int main(int argc, char* argv[]){
                 for(i = 0; i < SIZE; i++){
                     for(j = 0; j < SIZE; j++){
                         char *tmp = malloc(128 * sizeof(char));
-                        sprintf(tmp, "%d", (int) img -> data[i][j]), 
+                        sprintf(tmp, "%d", (int) img -> data[j][i]), 
                         strcat(result, tmp);
                         strcat(result, comma);
                         free(tmp);
@@ -78,9 +86,9 @@ int main(int argc, char* argv[]){
                 printf("This is for the kernel test\n");
                 break;
             case 'c':
-                printf("This is for the convolution test\n");
+                printf("This is for the Convolution test\n");
 
-                // input arguments required: input image, size of image, sigma of kernel and size of kernel
+                // input arguments required: input image, size of image, sigma of kernel, size of kernel, rdistance
                 // example:
                 // ./processmake -c /home/heqianw/Documents/git/ECSE444-Filtering/prototyping/clean.txt 128 0.2 5 3.5
                 
@@ -90,7 +98,7 @@ int main(int argc, char* argv[]){
                     return 1;
                 }
 
-                int sizeImg = atoi(argv[3]);
+                sizeImg = atoi(argv[3]);
                 float sigma = atof(argv[4]);
                 int sizeKnl = atoi(argv[5]);
                 float rdistance = atof(argv[6]);
@@ -106,7 +114,7 @@ int main(int argc, char* argv[]){
                 // struct Image *img = malloc(sizeof(Image));
                 // initImage(img, SIZE);
                 // read the file
-                int limit = sizeImg * sizeImg;
+                limit = sizeImg * sizeImg;
 
                 while (fgets(str, MAXCHAR, fp) != NULL){
                     char *ptr = strtok(str, comma);
@@ -116,18 +124,18 @@ int main(int argc, char* argv[]){
                     }
                 }
                 // now that the image is in the datastream:
-                struct Image *imgInput = malloc(sizeof(Image));
+                imgInput = malloc(sizeof(Image));
                 initImage(imgInput, sizeImg);
                 loadImage(imgInput, datastream);
 
-                struct Kernel *knl = malloc(sizeof(Kernel));
+                knl = malloc(sizeof(Kernel));
                 initKernel(knl, sizeKnl);
                        
                 generateHammingFilter(knl, rdistance);
                 // something is wrong in here
                 generateGaussianFilter(knl, sigma);
 
-                struct Image *imgOutput = malloc(sizeof(Image));
+                imgOutput = malloc(sizeof(Image));
                 initImage(imgOutput, sizeImg);
                 convolve(imgInput, imgOutput, knl);
 
@@ -136,7 +144,7 @@ int main(int argc, char* argv[]){
                 for(i = 0; i < sizeImg; i++){
                     for(j = 0; j < sizeImg; j++){
                         char *tmp = malloc(128 * sizeof(char));
-                        sprintf(tmp, "%d", (int) imgOutput -> data[i][j]), 
+                        sprintf(tmp, "%d", (int) imgOutput -> data[j][i]), 
                         strcat(result, tmp);
                         strcat(result, comma);
                         free(tmp);
@@ -160,9 +168,96 @@ int main(int argc, char* argv[]){
                 deinitImage(imgOutput);
                 deinitKernel(knl);
                 break;
+
             case 'f':
                 printf("This is for the Naive fourier Transform\n");
+                
+                // input arguments required: input image, size of image, sigma of kernel and size of kernel
+                // example:
+                // ./processmake -f /home/heqianw/Documents/git/ECSE444-Filtering/prototyping/clean.txt 128 3.5
+                
+                fp = fopen(argv[2], "r");
+                if(fp == NULL){
+                    printf("can't open file, please provide the full path\n");
+                    return 1;
+                }
 
+                sizeImg = atoi(argv[3]);
+                rValue = atof(argv[4]);
+
+                printf("Size of image: %d\n", sizeImg);
+                printf("Size of R value: %f\n", rValue);
+                datastream = malloc(sizeImg * sizeImg * sizeof(float));
+                
+
+                // This contains the whole image in a single string
+                // struct Image *img = malloc(sizeof(Image));
+                // initImage(img, SIZE);
+                // read the file
+
+                limit = sizeImg * sizeImg;
+
+                while (fgets(str, MAXCHAR, fp) != NULL){
+                    char *ptr = strtok(str, comma);
+                    for(i = 0; i < limit; i++){
+                        datastream[i] = atof(ptr);
+                        ptr = strtok(NULL, comma);
+                    }
+                }
+
+                // now that the image is in the datastream: load it into our struct
+                imgInput = malloc(sizeof(Image));
+                initImage(imgInput, sizeImg);
+                loadImage(imgInput, datastream);
+
+                cImgInput = malloc(sizeof(CImage));
+                initComplex(cImgInput, sizeImg);
+                loadComplexImage(cImgInput, datastream);
+
+                // compute FFT of the two images into the complex
+                fft(imgInput, cImgInput);
+
+                knl = malloc(sizeof(Kernel));
+                initKernel(knl, sizeImg);       
+                generateHammingFilter(knl, rValue);
+
+                // apply lowpass filter
+                lowPass(cImgInput, knl);
+
+                imgOutput = malloc(sizeof(Image));
+                initImage(imgOutput, sizeImg);
+                
+                // inverse fft
+                ifft(cImgInput, imgOutput);
+
+                // the int are usually under 256 & the comma and the +1 is for the null terminator
+                result = malloc(4 * sizeImg * sizeImg * sizeof(char) + 1);
+                for(i = 0; i < sizeImg; i++){
+                    for(j = 0; j < sizeImg; j++){
+                        char *tmp = malloc(128 * sizeof(char));
+                        sprintf(tmp, "%d", (int) imgOutput -> data[j][i]), 
+                        strcat(result, tmp);
+                        strcat(result, comma);
+                        free(tmp);
+                    }
+                }
+
+                result[strlen(result) - 1] = '\0';
+
+                // this is to write the outputs to a file
+                fp = fopen("output.txt", "rb+");
+                if(fp == NULL) //if file does not exist, create it
+                {
+                    fp = fopen("output.txt", "wb");
+                    fputs(result, fp);
+                }
+
+                free(result);
+                fclose(fp);
+
+                deinitImage(imgInput);
+                deinitImage(imgOutput);
+                deinitKernel(knl);
                 break;
         }
         argc--;

@@ -94,7 +94,7 @@ void logAction(short actionToLog) {
         FILE *fp = fopen(logFileName, "a");
 
         char *currTime = getCurrTime();
-        printf(currTime);
+        // printf(currTime);
         fwrite(currTime, 1, strlen(currTime), fp);
         fwrite(logText, 1, strlen(logText), fp);
 

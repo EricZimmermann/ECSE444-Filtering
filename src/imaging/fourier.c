@@ -211,10 +211,10 @@ void ctifft(struct CImage *input){
 
 // apply a lps to a complex representation of an image
 void lowPass(struct CImage *input, struct Kernel *filter){
-    for(short i = 0; i <  input->size; ++i){
-        for(short j = 0; j <  input->size; ++i){
-            input->re[i][j] *= filter->data[i][j];
-            input->im[i][j] *= filter->data[i][j];
+    for(short i = 0; i <  input -> size; ++i){
+        for(short j = 0; j <  input -> size; ++j){
+            input -> re[i][j] *= filter -> data[i][j];
+            input -> im[i][j] *= filter -> data[i][j];
         }
     }
 }

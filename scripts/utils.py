@@ -19,7 +19,7 @@ def saveTxt(image, filepath):
         output.write(str(image_stream[-1]))
         
 def txt2img(string):
-    size = np.sqrt(len(text))
+    size = int(np.sqrt(len(string)))
     return string.reshape((size,size))
 
 def listify(image):

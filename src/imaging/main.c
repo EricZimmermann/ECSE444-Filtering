@@ -32,6 +32,10 @@ int main(int argc, char* argv[]){
     double start = 0;
     double end = 0;
     
+    char *directory;
+    char *inputFileName;
+    char *fullPath;
+
     struct Image *imgInput;
     struct Image *imgOutput;
     struct CImage *cImgInput;
@@ -100,29 +104,31 @@ int main(int argc, char* argv[]){
 
                 // input arguments required: input image, size of image, sigma of kernel, size of kernel, rdistance
                 // example:
-                // ./processmake -c /home/heqianw/Documents/git/ECSE444-Filtering/prototyping/clean.txt 128 0.2 5 3.5
+                // ./processmake -c /home/heqianw/Documents/git/ECSE444-Filtering/prototyping/ clean.txt 128 0.2 5
+                directory = argv[2];
+                inputFileName = argv[3];
                 
-                fp = fopen(argv[2], "r");
+                fullPath = malloc(256 * sizeof(char));
+                strcat(fullPath, directory);
+                strcat(fullPath, inputFileName);
+                
+                fp = fopen(fullPath, "r");
                 if(fp == NULL){
                     printf("can't open file, please provide the full path\n");
                     return 1;
                 }
-
-                sizeImg = atoi(argv[3]);
-                float sigma = atof(argv[4]);
-                int sizeKnl = atoi(argv[5]);
-                float rdistance = atof(argv[6]);
+                
+                sizeImg = atoi(argv[4]);
+                float sigma = atof(argv[5]);
+                int sizeKnl = atoi(argv[6]);
 
                 printf("Size of image: %ld\n", sizeImg);
                 printf("Sigma of Kernel: %f\n", sigma);
                 printf("Size of Kernel: %d\n", sizeKnl);
-                printf("Size of R distance: %f\n", rdistance);
 
                 datastream = malloc(sizeImg * sizeImg * sizeof(float));
                 
                 // This contains the whole image in a single string
-                // struct Image *img = malloc(sizeof(Image));
-                // initImage(img, SIZE);
                 // read the file
                 limit = sizeImg * sizeImg;
 
@@ -140,8 +146,6 @@ int main(int argc, char* argv[]){
 
                 knl = malloc(sizeof(Kernel));
                 initKernel(knl, sizeKnl);
-                       
-                generateHammingFilter(knl, rdistance);
                 // something is wrong in here
                 generateGaussianFilter(knl, sigma);
 
@@ -168,20 +172,28 @@ int main(int argc, char* argv[]){
                 result[strlen(result) - 1] = '\0';
 
                 // this is to write the outputs to a file
-                fp = fopen("output.txt", "wb");
+                free(fullPath);
+                fullPath = malloc (256 * sizeof(char));
+                strcat(fullPath, directory);
+                strcat(fullPath, "output.txt");
+
+                fp = fopen(fullPath, "wb");
                 fputs(result, fp);
                 fclose(fp);
 
-                fp = fopen("logging.txt", "wb");
+                free(fullPath);
+                fullPath = malloc (256 * sizeof(char));
+                strcat(fullPath, directory);
+                strcat(fullPath, "logging.txt");
+
+                fp = fopen(fullPath, "wb");
                 sprintf(sImageSize, "Size of image: %ld \n", sizeImg);
                 sprintf(sKnlSize, "Size of Kernel: %d \n", sizeKnl);
                 sprintf(sSigma, "Sigma Value: %f \n", sigma);
-                sprintf(sRDistance, "R distance: %f \n", rdistance);
                 sprintf(sTimeTaken, "Time taken Convolution: %f us \n", end - start);
                 fputs(sImageSize, fp);
                 fputs(sKnlSize, fp);
                 fputs(sSigma, fp);
-                fputs(sRDistance, fp);
                 fputs(sTimeTaken, fp);
                 fclose(fp);
 
@@ -201,14 +213,21 @@ int main(int argc, char* argv[]){
                 // example:
                 // ./processmake -f /home/heqianw/Documents/git/ECSE444-Filtering/prototyping/clean.txt 128 3.5
                 
-                fp = fopen(argv[2], "r");
+                directory = argv[2];
+                inputFileName = argv[3];
+                
+                fullPath = malloc(256 * sizeof(char));
+                strcat(fullPath, directory);
+                strcat(fullPath, inputFileName);
+                
+                fp = fopen(fullPath, "r");
                 if(fp == NULL){
                     printf("can't open file, please provide the full path\n");
                     return 1;
                 }
 
-                sizeImg = atoi(argv[3]);
-                rValue = atof(argv[4]);
+                sizeImg = atoi(argv[4]);
+                rValue = atof(argv[5]);
 
                 printf("Size of image: %ld\n", sizeImg);
                 printf("Size of R value: %f\n", rValue);
@@ -278,11 +297,21 @@ int main(int argc, char* argv[]){
                 result[strlen(result) - 1] = '\0';
 
                 // this is to write the outputs to a file
-                fp = fopen("output.txt", "wb");
+                free(fullPath);
+                fullPath = malloc (256 * sizeof(char));
+                strcat(fullPath, directory);
+                strcat(fullPath, "output.txt");
+
+                fp = fopen(fullPath, "wb");
                 fputs(result, fp);
                 fclose(fp);
                 
-                fp = fopen("logging.txt", "wb");
+                free(fullPath);
+                fullPath = malloc (256 * sizeof(char));
+                strcat(fullPath, directory);
+                strcat(fullPath, "logging.txt");
+
+                fp = fopen(fullPath, "wb");                
                 sprintf(sImageSize, "Size of image: %ld \n", sizeImg);
                 sprintf(sRDistance, "R value: %f \n", rValue);
                 sprintf(sTimeTaken, "Time taken Naive FFT: %f us \n", end - start);
@@ -292,7 +321,6 @@ int main(int argc, char* argv[]){
                 fclose(fp);
 
                 free(result);
-                
 
                 deinitImage(imgInput);
                 deinitImage(imgOutput);
@@ -307,14 +335,21 @@ int main(int argc, char* argv[]){
                 // example:
                 // ./processmake -f /home/heqianw/Documents/git/ECSE444-Filtering/prototyping/clean.txt 128 3.5
                 
-                fp = fopen(argv[2], "r");
+                directory = argv[2];
+                inputFileName = argv[3];
+                
+                fullPath = malloc(256 * sizeof(char));
+                strcat(fullPath, directory);
+                strcat(fullPath, inputFileName);
+                
+                fp = fopen(fullPath, "r");
                 if(fp == NULL){
                     printf("can't open file, please provide the full path\n");
                     return 1;
                 }
 
-                sizeImg = atoi(argv[3]);
-                rValue = atof(argv[4]);
+                sizeImg = atoi(argv[4]);
+                rValue = atof(argv[5]);
 
                 printf("Size of image: %ld\n", sizeImg);
                 printf("Size of R value: %f\n", rValue);
@@ -373,11 +408,21 @@ int main(int argc, char* argv[]){
                 }
                 result[strlen(result) - 1] = '\0';
                 // this is to write the outputs to a file
-                fp = fopen("output.txt", "wb");
+                free(fullPath);
+                fullPath = malloc (256 * sizeof(char));
+                strcat(fullPath, directory);
+                strcat(fullPath, "output.txt");
+
+                fp = fopen(fullPath, "wb");
                 fputs(result, fp);
                 fclose(fp);
+                
+                free(fullPath);
+                fullPath = malloc (256 * sizeof(char));
+                strcat(fullPath, directory);
+                strcat(fullPath, "logging.txt");
 
-                fp = fopen("logging.txt", "wb");
+                fp = fopen(fullPath, "wb");
                 sprintf(sImageSize, "Size of image: %ld \n", sizeImg);
                 sprintf(sRDistance, "R value: %f \n", rValue);
                 sprintf(sTimeTaken, "Time taken Cooley Turkey FFT: %f us \n", end - start);

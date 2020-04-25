@@ -7,11 +7,13 @@ Convolutional operations
 
 void convolve(struct Image *input, struct Image *output, struct Kernel *kernel){
 
-	short irow, icol;
-	short krow, kcol;
+	short irow = 0
+    short icol = 0;
+	short krow = 0;
+    short kcol = 0;
 	short half_band = kernel->size >> 1;
-	short rindex;     // can overflow if unsigned
-    short cindex;     // can overflow if unsigned
+	short rindex = 0;     // can overflow if unsigned
+    short cindex = 0;     // can overflow if unsigned
 
 	// image iterables
     for(irow  = 0; irow < input->size; ++irow){

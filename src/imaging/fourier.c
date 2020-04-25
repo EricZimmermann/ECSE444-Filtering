@@ -17,8 +17,10 @@ cooley-tukey
 // im not sure if this works, we need to find a way to return both re and im. C doesn't work well with passing by reference
 // somehow its an operation with & that we are missing here i thin
 void bitReverse(float *re, float *im, unsigned short size){
-    unsigned short i, j, k = 0;
-    unsigned short bit = 0;
+    short i = 0;
+    short j = 0;
+    short k = 0;
+    short bit = 0;
     
     for(i = 0; i < size; ++i){
         if(i < j){
@@ -46,9 +48,11 @@ short customlog2(short size){
 // Compute fft using naive dft
 void fft(struct Image *input, struct CImage *output){
 	
-	short v, u;             // wave components
-	short y, x;             // spatial component
-	float modulator;
+	short v = 0;
+    short u = 0;             // wave components
+	short y = 0;
+    short x = 0;             // spatial component
+	float modulator = 0.0;
 	float norm = input -> size * input -> size;
 	
 	// accumulator
@@ -77,9 +81,11 @@ void fft(struct Image *input, struct CImage *output){
 // Compute ifft using naive dft
 void ifft(struct CImage *input, struct Image *output){
 	
-	short v, u;             // wave components
-	short y, x;             // spatial component
-	float modulator;
+	short v = 0;
+    short u = 0;             // wave components
+	short y = 0;
+    short x = 0;             // spatial component
+	float modulator = 0.0;
 		
 	// accumulator
 	for(y = 0; y < input->size; ++y){
@@ -98,12 +104,16 @@ void ifft(struct CImage *input, struct Image *output){
 // https://en.wikipedia.org/wiki/Cooley%E2%80%93Tukey_FFT_algorithm#Data_reordering,_bit_reversal,_and_in-place_algorithms
 void ctft(float *re, float *im, short size, short d){
     // delarations and inits
-    short base = customlog2(size);           // radix-2 division points
+    short base = customlog2(size);      // radix-2 division points
     short l1 = 0;                       // radix-2 indexer
-    short l2 = 0;                       // radix-2 indexer
-    float mod, fmod, mod_re, mod_im = 0.0;       // fq modulators
-    float re_cache, im_cache = 0.0;              // caches for complex computations
-    l2 = 1;                                      // index step
+    short l2 = 1;                       
+    float mod = 0.0;                    // fq modulators
+    float fmod = 0.0;
+    float mod_re = 0.0;
+    float mod_im = 0.0;          
+    float re_cache = 0.0;              // caches for complex computations
+    float im_cache = 0.0;              
+                                  
     // reverse bits for butterfly radix-2 comps
     char comma[] = ",";
 
@@ -170,11 +180,13 @@ void ctft(float *re, float *im, short size, short d){
 void ctftrc(struct CImage *input, short direction){
     
     // iterators
-    short x,y = 0;
+    short x = 0;
+    shorty = 0;
     
     // init buffers
     float *buffer_re = (float *)malloc(input->size * sizeof(float));
     float *buffer_im = (float *)malloc(input->size * sizeof(float));
+    
     // process fft axis-wise
     for(y = 0; y < input->size; ++y){
         // cache 

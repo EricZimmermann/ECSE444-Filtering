@@ -5,7 +5,7 @@
 #include "fourier.h"
 #include "utils.h"
 
-#define MAXCHAR 100000
+#define MAXCHAR 1000000
 #define SIZE 128
 
 int main(int argc, char* argv[]){
@@ -18,14 +18,14 @@ int main(int argc, char* argv[]){
     char comma[] = ",";
     float *datastream;
     char *result;
-    int sizeImg;
+    unsigned long sizeImg;
     float rValue;
     
     struct Image *imgInput;
     struct Image *imgOutput;
     struct CImage *cImgInput;
     struct Kernel *knl;
-    int limit;
+    unsigned long limit;
     while((argc > 1) && (argv)){
         switch(argv[1][1]){
             case 'i':
@@ -39,7 +39,7 @@ int main(int argc, char* argv[]){
                 // This contains the whole image in a single string
                 struct Image *img = malloc(sizeof(Image));
                 initImage(img, SIZE);
-                // printf("Yes");
+
                 // read the file
                 while (fgets(str, MAXCHAR, fp) != NULL){
                     
@@ -80,6 +80,7 @@ int main(int argc, char* argv[]){
 
                 deinitImage(img);
                 break;
+                
             case 'c':
                 printf("This is for the Convolution test\n");
 
@@ -98,7 +99,7 @@ int main(int argc, char* argv[]){
                 int sizeKnl = atoi(argv[5]);
                 float rdistance = atof(argv[6]);
 
-                printf("Size of image: %d\n", sizeImg);
+                printf("Size of image: %ld\n", sizeImg);
                 printf("Sigma of Kernel: %f\n", sigma);
                 printf("Size of Kernel: %d\n", sizeKnl);
                 printf("Size of R distance: %f\n", rdistance);
@@ -180,7 +181,7 @@ int main(int argc, char* argv[]){
                 sizeImg = atoi(argv[3]);
                 rValue = atof(argv[4]);
 
-                printf("Size of image: %d\n", sizeImg);
+                printf("Size of image: %ld\n", sizeImg);
                 printf("Size of R value: %f\n", rValue);
                 datastream = malloc(sizeImg * sizeImg * sizeof(float));
                 
@@ -275,7 +276,7 @@ int main(int argc, char* argv[]){
                 sizeImg = atoi(argv[3]);
                 rValue = atof(argv[4]);
 
-                printf("Size of image: %d\n", sizeImg);
+                printf("Size of image: %ld\n", sizeImg);
                 printf("Size of R value: %f\n", rValue);
                 datastream = malloc(sizeImg * sizeImg * sizeof(float));
                 

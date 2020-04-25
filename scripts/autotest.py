@@ -24,7 +24,7 @@ def main():
     # convs
     conv_params = {
         'size' : [32, 64, 128, 256, 512],
-        'kernel':[3, 5, 7, 9],
+        'kernel':[3, 5, 7, 9, 11],
         'sigma': [0.5, 0.85, 1.25]
     }
     
@@ -65,7 +65,7 @@ def main():
     for size in dft_params['size']:
         for r in dft_params['r']:
                 # build exp dir
-                dir_path = os.path.join(exp_path, 'dft'+str(size)+'_'+str(r))
+                dir_path = os.path.join(exp_path, 'dft_'+str(size)+'_'+str(r))
                 try:
                     os.mkdir(dir_path)
                 except:
@@ -86,7 +86,7 @@ def main():
     for size in fft_params['size']:
         for r in fft_params['r']:
                 # build exp dir
-                dir_path = os.path.join(exp_path, 'fft'+str(size)+'_'+str(r))
+                dir_path = os.path.join(exp_path, 'fft_'+str(size)+'_'+str(r))
                 try:
                     os.mkdir(dir_path)
                 except:

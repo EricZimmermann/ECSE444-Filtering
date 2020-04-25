@@ -182,7 +182,6 @@ void ctftrc(struct CImage *input, short direction){
             input->im[y][x] = buffer_im[x];
         }
     }
-    int lpl = 0;
     // alternate axis
     for(x = 0; x < input->size; ++x){
         // cache 
@@ -190,7 +189,6 @@ void ctftrc(struct CImage *input, short direction){
             buffer_re[y] = input->re[y][x]; 
             buffer_im[y] = input->im[y][x];
         }
-        lpl++;
         // transform
         ctft(buffer_re, buffer_im, input -> size, direction);
                 

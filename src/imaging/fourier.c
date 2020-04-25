@@ -200,8 +200,8 @@ void ctftrc(struct CImage *input, short direction){
             
         }
     }
-    // free(buffer_re);
-    // free(buffer_im);
+    free(buffer_re);
+    free(buffer_im);
 }
 
 

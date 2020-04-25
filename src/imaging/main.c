@@ -3,6 +3,7 @@
 #include <string.h>
 #include "conv.h"
 #include "fourier.h"
+#include "utils.h"
 
 #define MAXCHAR 100000
 #define SIZE 128
@@ -212,6 +213,9 @@ int main(int argc, char* argv[]){
                 initKernel(knl, sizeImg);       
                 generateHammingFilter(knl, rValue);
 
+                // apply quickshift to the kernel
+                shift(knl -> data, knl -> size);
+
                 // compute FFT of the two images into the complex
                 fft(imgInput, cImgInput);
 
@@ -298,9 +302,14 @@ int main(int argc, char* argv[]){
                 knl = malloc(sizeof(Kernel));
                 initKernel(knl, sizeImg);       
                 generateHammingFilter(knl, rValue);
+
+                // apply quickshift to the kernel
+                shift(knl -> data, knl -> size);
+
                 printf("At CTFFT\n");
                 // compute CTFFT of the image
                 ctftt(cImgInput);
+                
                 printf("At lowpass\n");
                 // apply lowpass filter
                 lowPass(cImgInput, knl);

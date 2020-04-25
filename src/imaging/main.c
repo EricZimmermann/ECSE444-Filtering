@@ -1,12 +1,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include "conv.h"
 #include "fourier.h"
 #include "utils.h"
 
 #define MAXCHAR 1000000
 #define SIZE 128
+
+double gettime(){
+    struct timespec ts;
+    if(clock_gettime(CLOCK_REALTIME, &ts) < 0)
+        perror("Clock-gettime");
+    return ts.tv_sec * 1000000 + ts.tv_nsec/1000;
+}
+
 
 int main(int argc, char* argv[]){
     printf("Image processing \n");
@@ -20,12 +29,21 @@ int main(int argc, char* argv[]){
     char *result;
     unsigned long sizeImg;
     float rValue;
+    double start = 0;
+    double end = 0;
     
     struct Image *imgInput;
     struct Image *imgOutput;
     struct CImage *cImgInput;
     struct Kernel *knl;
     unsigned long limit;
+
+    char *sImageSize = malloc (50 * sizeof(char));
+    char *sSigma = malloc (50 * sizeof(char));
+    char *sKnlSize = malloc (50 * sizeof(char));
+    char *sRDistance = malloc (50 * sizeof(char));
+    char *sTimeTaken = malloc (50 * sizeof(char));
+
     while((argc > 1) && (argv)){
         switch(argv[1][1]){
             case 'i':
@@ -68,13 +86,9 @@ int main(int argc, char* argv[]){
                 result[strlen(result) - 1] = '\0';
 
                 // this is to write the outputs to a file
-                fp = fopen("output.txt", "rb+");
-                if(fp == NULL) //if file does not exist, create it
-                {
-                    fp = fopen("output.txt", "wb");
-                    fputs(result, fp);
-                }
-
+                fp = fopen("output.txt", "wb");
+                fputs(result, fp);
+                
                 free(result);
                 fclose(fp);
 
@@ -133,7 +147,11 @@ int main(int argc, char* argv[]){
 
                 imgOutput = malloc(sizeof(Image));
                 initImage(imgOutput, sizeImg);
+                
+                start = gettime();
                 convolve(imgInput, imgOutput, knl);
+                end = gettime();
+                printf("The time taken for convolution was : %f us\n", end - start);
 
                 // the int are usually under 256 & the comma and the +1 is for the null terminator
                 result = malloc(4 * sizeImg * sizeImg * sizeof(char) + 1);
@@ -150,16 +168,27 @@ int main(int argc, char* argv[]){
                 result[strlen(result) - 1] = '\0';
 
                 // this is to write the outputs to a file
-                fp = fopen("output.txt", "rb+");
-                if(fp == NULL) //if file does not exist, create it
-                {
-                    fp = fopen("output.txt", "wb");
-                    fputs(result, fp);
-                }
+                fp = fopen("output.txt", "wb");
+                fputs(result, fp);
+                fclose(fp);
+
+                fp = fopen("logging.txt", "wb");
+                sprintf(sImageSize, "Size of image: %ld \n", sizeImg);
+                sprintf(sKnlSize, "Size of Kernel: %d \n", sizeKnl);
+                sprintf(sSigma, "Sigma Value: %f \n", sigma);
+                sprintf(sRDistance, "R distance: %f \n", rdistance);
+                sprintf(sTimeTaken, "Time taken Convolution: %f us \n", end - start);
+                fputs(sImageSize, fp);
+                fputs(sKnlSize, fp);
+                fputs(sSigma, fp);
+                fputs(sRDistance, fp);
+                fputs(sTimeTaken, fp);
+                fclose(fp);
 
                 free(result);
                 fclose(fp);
-
+                
+                
                 deinitImage(imgInput);
                 deinitImage(imgOutput);
                 deinitKernel(knl);
@@ -214,20 +243,25 @@ int main(int argc, char* argv[]){
                 initKernel(knl, sizeImg);       
                 generateHammingFilter(knl, rValue);
 
+                imgOutput = malloc(sizeof(Image));
+                initImage(imgOutput, sizeImg);
+
                 // apply quickshift to the kernel
                 shift(knl -> data, knl -> size);
-
+                
                 // compute FFT of the two images into the complex
+                start = gettime();
                 fft(imgInput, cImgInput);
 
                 // apply lowpass filter
                 lowPass(cImgInput, knl);
-
-                imgOutput = malloc(sizeof(Image));
-                initImage(imgOutput, sizeImg);
                 
                 // inverse fft
                 ifft(cImgInput, imgOutput);
+                
+                end = gettime();
+                printf("The time taken for Naive FFT was : %f us\n", end - start);
+
 
                 // the int are usually under 256 & the comma and the +1 is for the null terminator
                 result = malloc(4 * sizeImg * sizeImg * sizeof(char) + 1);
@@ -244,15 +278,21 @@ int main(int argc, char* argv[]){
                 result[strlen(result) - 1] = '\0';
 
                 // this is to write the outputs to a file
-                fp = fopen("output.txt", "rb+");
-                if(fp == NULL) //if file does not exist, create it
-                {
-                    fp = fopen("output.txt", "wb");
-                    fputs(result, fp);
-                }
+                fp = fopen("output.txt", "wb");
+                fputs(result, fp);
+                fclose(fp);
+                
+                fp = fopen("logging.txt", "wb");
+                sprintf(sImageSize, "Size of image: %ld \n", sizeImg);
+                sprintf(sRDistance, "R value: %f \n", rValue);
+                sprintf(sTimeTaken, "Time taken Naive FFT: %f us \n", end - start);
+                fputs(sImageSize, fp);
+                fputs(sRDistance, fp);
+                fputs(sTimeTaken, fp);
+                fclose(fp);
 
                 free(result);
-                fclose(fp);
+                
 
                 deinitImage(imgInput);
                 deinitImage(imgOutput);
@@ -307,16 +347,17 @@ int main(int argc, char* argv[]){
                 // apply quickshift to the kernel
                 shift(knl -> data, knl -> size);
 
+                start = gettime();
                 // compute CTFFT of the image
                 ctftt(cImgInput);
 
                 // apply lowpass filter
                 lowPass(cImgInput, knl);
 
-                imgOutput = malloc(sizeof(Image));
-                initImage(imgOutput, sizeImg);
                 // inverse fft
                 ctifft(cImgInput);
+                end = gettime();
+                printf("The time taken for Cooley Turkey FFT was : %f us\n", end - start);
 
                 // the int are usually under 256 & the comma and the +1 is for the null terminator
                 free(result);
@@ -332,15 +373,20 @@ int main(int argc, char* argv[]){
                 }
                 result[strlen(result) - 1] = '\0';
                 // this is to write the outputs to a file
-                fp = fopen("output.txt", "rb+");
-                if(fp == NULL) //if file does not exist, create it
-                {
-                    fp = fopen("output.txt", "wb");
-                    fputs(result, fp);
-                }
+                fp = fopen("output.txt", "wb");
+                fputs(result, fp);
+                fclose(fp);
+
+                fp = fopen("logging.txt", "wb");
+                sprintf(sImageSize, "Size of image: %ld \n", sizeImg);
+                sprintf(sRDistance, "R value: %f \n", rValue);
+                sprintf(sTimeTaken, "Time taken Cooley Turkey FFT: %f us \n", end - start);
+                fputs(sImageSize, fp);
+                fputs(sRDistance, fp);
+                fputs(sTimeTaken, fp);
+                fclose(fp);
 
                 free(result);
-                fclose(fp);
                 break;
         }
         argc--;

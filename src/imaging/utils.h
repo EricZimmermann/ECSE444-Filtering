@@ -7,6 +7,4 @@ void swap1d(float *input, short loc_in, short loc_out);
 // spectrum visualizations
 void shift(float **input, short size);
 
-void logAction(short actionToLog);
-
 #endif

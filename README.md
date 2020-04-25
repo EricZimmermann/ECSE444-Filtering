@@ -24,7 +24,7 @@ Note: image size must be of base power 2: {2, 4, 16, 32, 64, 128, 256, 512}
 1. `cd src/imaging` (navigate into the directory containing the Makefile)
 2.`make processmake` (builds the executable)
 3. `./processmake -c <full path to the target directory containing input txt> <input txt filename> <size of img, eg: 32, 128> <sigma of kernel as float> <size of kernel eg: 3, 5, 7>
-4. output.txt contains the resulting image and logging.txt contains the parameters we used
+4. output.txt contains the resulting image and logging.txt contains the parameters we used (located in same directory as specified)
 
 Note: image size must be identical to that selected in preprocessing
 Note: kernel size must be odd and smaller than size of image
@@ -34,7 +34,7 @@ Note: kernel size must be odd and smaller than size of image
 1. `cd src/imaging` (navigate into the directory containing the Makefile)
 2. `make processmake` (builds the executable)
 3. `./processmake -f <full path to the target directory containing input txt> <input txt filename> <size of img ideally <=32, eg: 32> <r value as float: eg: 1.0>`
-4. output.txt contains the resulting image and logging.txt contains the parameters we used
+4. output.txt contains the resulting image and logging.txt contains the parameters we used (located in same directory as specified)
 
 Note: sizes of >32 will take too long
 
@@ -43,7 +43,7 @@ Note: sizes of >32 will take too long
 1. `cd src/imaging` (navigate into the directory containing the Makefile)
 2. `make processmake` (builds the executable)
 3. `./processmake -t <full path to the target directory containing input txt> <input txt filename> <size of img, eg: 32, 128, 512> <r value as float: eg: 1.0>`
-4. output.txt contains the resulting image and logging.txt contains the parameters we used
+4. output.txt contains the resulting image and logging.txt contains the parameters we used (located in same directory as specified)
 
 ## Postprocessing
 Compute PSNR metrics and add to logging.txt, create .jpg for output.txt file

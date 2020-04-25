@@ -45,7 +45,7 @@ Note: sizes of >32 will take too long
 ## Postprocessing
 Compute PSNR metrics and add to logging.txt, create .jpg for output.txt file
 
-1. `python scripts/postprocess.py --input <full path to directory of .txt files> 
+1. `python scripts/postprocess.py --input <full path to directory of .txt files>`
 2. logging.txt updated
 3. output.png created 
 

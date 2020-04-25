@@ -1,5 +1,5 @@
 import argparse
-import cv
+import cv2
 import os
 import utils
 import numpy as np
@@ -15,11 +15,10 @@ def main():
     processed_txt = utils.loadTxt(os.path.join(args.input, 'output.txt'))
     input_image = utils.txt2img(input_txt)
     processed_image = utils.txt2img(processed_txt)
-    utils.saveImage(os.path.join(args.output, 'output.jpg'), processed_image)
+    utils.saveImage(os.path.join(args.input, 'output.jpg'), processed_image)
     psnr = utils.psnr(input_image, processed_image)
-    logs = open('logging.txt', 'a')
-    logs.write("PSNR:" + str(psnr))
-    logs.close()
+    with open(os.path.join(args.input, 'logging.txt'), 'a') as log:
+        log.write("PSNR: " + str(psnr))
     
     
 if __name__ == '__main__':

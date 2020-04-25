@@ -1,5 +1,5 @@
 import cv2
-import numpy
+import numpy as np
 
 def loadImage(filepath, size):
     img =  cv2.imread(filepath, cv2.IMREAD_GRAYSCALE)
@@ -30,8 +30,9 @@ def fuzz(image, ranges, p=0.15):
     rows, cols = image.shape
     for row in range(rows):
         for col in range(cols):
-            if(numpy.random.uniform() < p):
-                image[row][col] += numpy.random.randint(-ranges, ranges)
+            if(np.random.uniform() < p):
+                image[row][col] += np.random.randint(-ranges, ranges)
 
 def psnr(img_one, img_two):
-	return cv2.PSNR(img1, img2)
+	return cv2.PSNR(img_one, img_two)
+

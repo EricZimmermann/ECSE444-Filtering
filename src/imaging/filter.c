@@ -54,7 +54,7 @@ void generateGaussianFilter(struct Kernel *kernel, float sigma){
     
 
     for (short i = -half_band; i <= half_band; ++i) {
-        for (short j = -half_band; j < half_band; ++j) {
+        for (short j = -half_band; j <= half_band; ++j) {
         	kernel-> data[i + half_band][j + half_band] /= sum;
         }
     }

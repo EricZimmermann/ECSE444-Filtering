@@ -16,16 +16,18 @@ cooley-tukey
 // radix-2 bit reversal
 // im not sure if this works, we need to find a way to return both re and im. C doesn't work well with passing by reference
 // somehow its an operation with & that we are missing here i thin
-void bitReverse(float *re, float *im, unsigned short size){
-    unsigned short i, j, k = 0;
-    unsigned short bit = 0;
+void bitReverse(float *re, float *im, short size){
+    short i = 0; 
+    short j = 0;
+    short k = 0;
+    short bit = 0;
     
     for(i = 0; i < size; ++i){
         if(i < j){
             swap1d(re, i, j);
             swap1d(im, i, j);
         }
-        bit = 1 + (i^(i + 1));
+        bit = 1 + (i ^ (i + 1));
         k = size / bit;
         j ^= size - k;
     }
@@ -104,31 +106,9 @@ void ctft(float *re, float *im, short size, short d){
     float mod, fmod, mod_re, mod_im = 0.0;       // fq modulators
     float re_cache, im_cache = 0.0;              // caches for complex computations
     l2 = 1;                                      // index step
+    
     // reverse bits for butterfly radix-2 comps
-    char comma[] = ",";
-
-    char *printable = malloc (5 * size * size * sizeof(char));
-    for(int i = 0; i < size*size; i++){
-        char *tmp = malloc(128 * sizeof(char));
-        sprintf(tmp, "%d", (int) re[i]), 
-        strcat(printable, tmp);
-        strcat(printable, comma);
-        free(tmp);
-    }
-    printf("%s\n", printable);
     bitReverse(re, im, size);
-
-    free(printable);
-    printable = malloc (5 * size * size * sizeof(char));
-    for(int i = 0; i < size*size; i++){
-        char *tmp = malloc(128 * sizeof(char));
-        sprintf(tmp, "%d", (int) re[i]), 
-        strcat(printable, tmp);
-        strcat(printable, comma);
-        free(tmp);
-    }
-    printf("%s\n", printable);
-    exit(1);
     for(short radix = 0; radix < base; ++radix){
         l1 = l2;
         l2 <<= 1;

@@ -233,7 +233,7 @@ int main(int argc, char* argv[]){
                 for(i = 0; i < sizeImg; i++){
                     for(j = 0; j < sizeImg; j++){
                         char *tmp = malloc(128 * sizeof(char));
-                        sprintf(tmp, "%d", (int) imgOutput -> data[j][i]), 
+                        sprintf(tmp, "%d", (int) imgOutput -> data[j][i]); 
                         strcat(result, tmp);
                         strcat(result, comma);
                         free(tmp);
@@ -323,7 +323,7 @@ int main(int argc, char* argv[]){
                 for(i = 0; i < sizeImg; i++){
                     for(j = 0; j < sizeImg; j++){
                         char *tmp = malloc(128 * sizeof(char));
-                        sprintf(tmp, "%d", (int) cImgInput -> re[j][i]), 
+                        sprintf(tmp, "%d", (int) cImgInput -> re[j][i]); 
                         strcat(result, tmp);
                         strcat(result, comma);
                         free(tmp);

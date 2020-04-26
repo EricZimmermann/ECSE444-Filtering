@@ -8,7 +8,7 @@ parser.add_argument('--input', type=str, required=True)
 parser.add_argument('--output', type=str, required=True)
 parser.add_argument('--size', type=int, required=True)
 parser.add_argument('--p-noise', type=float, required=False, default=0.8)
-parser.add_argument('--r-noise', type=float, required=False, default=15)
+parser.add_argument('--r-noise', type=float, required=False, default=25)
 
 def main():
     

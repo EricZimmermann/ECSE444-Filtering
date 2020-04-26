@@ -6,6 +6,7 @@ Instructions on how to run the code
 Pre and Post processing of images are done using python whose requirements are found in the root directory of the project and are be installed via:
 `pip install -r requirements.txt` 
 
+Note: `pip install jupyter` if you would like to look at notebooks
 
 ## Preprocessing
 Done once! Colored images in .jpg or .png are converted from RBG to grayscale, resmapled, and flattened into `.txt` files for processing. Preprocess pipeline creates a clean.txt and noise.txt outputs where a noise image is created to validate the algorithms below.

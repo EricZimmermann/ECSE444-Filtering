@@ -14,9 +14,9 @@ Done once! Colored images in .jpg or .png are converted from RBG to grayscale, r
 1 .`python scripts/preprocess.py --input <full path to image> --output <directory of .txt creation> --size <target image size 2^n>` <br>
 2. clean.txt and noise.txt created in output directory <br>
 
-Optional cmds are: 
-`--r_noise <range of additive noise ~ default 15>`  
-`--p_noise <probability of additive noise ~ default 0.5>` 
+Optional cmds are: <br>
+`--r_noise <range of additive noise ~ default 15>` <br>
+`--p_noise <probability of additive noise ~ default 0.5>`  <br>
 
 Note: image size must be of base power 2: {2, 4, 16, 32, 64, 128, 256, 512}
 

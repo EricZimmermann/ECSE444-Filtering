@@ -11,12 +11,12 @@ Note: `pip install jupyter` if you would like to look at notebooks
 ## Preprocessing
 Done once! Colored images in .jpg or .png are converted from RBG to grayscale, resampled, and flattened into `.txt` files for processing. Preprocess pipeline creates a clean.txt and noise.txt outputs where a noise image is created to validate the algorithms below.
 
-1 .`python scripts/preprocess.py --input <full path to image> --output <directory of .txt creation> --size <target image size 2^n>`
+1 .`python scripts/preprocess.py --input <full path to image> --output <directory of .txt creation> --size <target image size 2^n>` 
 2. clean.txt and noise.txt created in output directory
 
 Optional cmds are:
-`--r_noise <range of additive noise ~ default 15>`
-`--p_noise <probability of additive noise ~ default 0.5>`
+`--r_noise <range of additive noise ~ default 15>`  
+`--p_noise <probability of additive noise ~ default 0.5>` 
 
 Note: image size must be of base power 2: {2, 4, 16, 32, 64, 128, 256, 512}
 
@@ -27,8 +27,8 @@ Note: image size must be of base power 2: {2, 4, 16, 32, 64, 128, 256, 512}
 3. `./processmake -c <full path to the target directory containing input txt> <input txt filename> <size of img> <sigma of kernel as float> <size of kernel eg: 3, 5, 7>`
 4. output.txt contains the resulting image and logging.txt contains the parameters we used (located in same directory as specified)
 
-Note: image size must be identical to that selected in preprocessing
-Note: kernel size must be odd and smaller than size of image
+Note: image size must be identical to that selected in preprocessing <br>
+Note: kernel size must be odd and smaller than size of image <br>
 
 
 ## Steps to run Naive FFT (requires terminal):
@@ -37,7 +37,7 @@ Note: kernel size must be odd and smaller than size of image
 3. `./processmake -f <full path to the target directory containing input txt> <input txt filename> <size of img ideally <=32, eg: 32> <r value as float: eg: 1.0>`
 4. output.txt contains the resulting image and logging.txt contains the parameters we used (located in same directory as specified)
 
-Note: sizes of >32 will take too long
+Note: sizes of >128 will take too long
 
 
 ## Steps to run Cooley-Tukey FFT (requires terminal):

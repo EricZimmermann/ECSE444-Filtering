@@ -11,7 +11,7 @@ Note: `pip install jupyter` if you would like to look at notebooks
 ## Preprocessing
 Done once! Colored images in .jpg or .png are converted from RBG to grayscale, resampled, and flattened into `.txt` files for processing. Preprocess pipeline creates a clean.txt and noise.txt outputs where a noise image is created to validate the algorithms below.
 
-1 .`python scripts/preprocess.py --input <full path to image> --output <directory of .txt creation> --size <target image size 2^n>` 
+1 .`python scripts/preprocess.py --input <full path to image> --output <directory of .txt creation> --size <target image size 2^n>` <br>
 2. clean.txt and noise.txt created in output directory <br>
 
 Optional cmds are: 

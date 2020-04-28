@@ -1,12 +1,58 @@
 # ECSE444-Filtering
 
-Instructions on how to run the code
+The following readme has been written in markdown and should therefore be viewed with the proper format for optimal clarity.
+
+## Directory Structure
+
+`├── README.md
+├── Stochastic_Analysis.ipynb
+├── prototyping
+│   ├── obj.py
+│   ├── processing.py
+│   ├── test.png
+│   └── validation.ipynb
+├── requirements.txt
+├── scripts
+│   ├── __pycache__
+│   │   └── utils.cpython-37.pyc
+│   ├── autotest.py
+│   ├── postprocess.py
+│   ├── preprocess.py
+│   └── utils.py
+├── src
+│   └── imaging
+│       ├── Makefile
+│       ├── conv.c
+│       ├── conv.h
+│       ├── filter.c
+│       ├── filter.h
+│       ├── fourier.c
+│       ├── fourier.h
+│       ├── image.c
+│       ├── image.h
+│       ├── main.c
+│       ├── processmake
+│       ├── utils.c
+│       └── utils.h
+└── test.png`
+
+## Project Description
+The project provides implementations from scratch!!! of classical image denosing algorithms that include: <br>
+Image Convolutions - `src/imaging/conv.c` <br>
+Fourier Transforms (DFT and FFT) - `src/imaging/fourier.c` <br>
+<br>
+Image and complex image structures can be found in  `src/imaging/image.c` while filter structures are found in  `src/imaging/filter.c ` <br>
+
+Note: A test image has been provided in root! please use this for simplicity!
+
 
 ## Environment Preparation
 Pre and Post processing of images are done using python whose requirements are found in the root directory of the project and are to be installed via:
-`pip install -r requirements.txt` 
+`pip install -r requirements.txt` <br>
 
-Note: `pip install jupyter` if you would like to look at notebooks
+If any issues persist with installations, please `pip install numpy` and `pip install opencv-python`.
+
+Note: `pip install jupyter` if you would like to look at notebooks. To run notebooks, `pip install matplotlib`
 
 ## Preprocessing
 Done once! Colored images in .jpg or .png are converted from RBG to grayscale, resampled, and flattened into `.txt` files for processing. Preprocess pipeline creates a clean.txt and noise.txt outputs where a noise image is created to validate the algorithms below.
@@ -52,6 +98,18 @@ Compute PSNR metrics and add to logging.txt, create .jpg for output.txt file
 1. `python scripts/postprocess.py --input <full path to directory of .txt files>`
 2. logging.txt updated
 3. output.png created 
+
+## Example
+1.  `mkdir experiment` <br>
+2.  `python scripts/preprocess.py --input ./test.png --output ./experiment --size 256` <br>
+3.   `cd src/imaging ` <br>
+4.   `make processmake` <br>
+5.  `./processmake -t ../../experiment/ noisy.txt 0.3` <br>
+6.  `cd ../../` <br>
+7. `python scripts/postprocess.py --input ./experiment` <br>
+
+Note: Repeat steps 5 - 7 as needed
+
 
 ## Automated Testing (at your own risk!)
 Runs a set of configs to compure batch ffts and persist info. Please edit configs before running or else! Run from root!

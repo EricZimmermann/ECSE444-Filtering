@@ -4,37 +4,35 @@ The following readme has been written in markdown and should therefore be viewed
 
 ## Directory Structure
 
-`├── README.md
-├── Stochastic_Analysis.ipynb
-├── prototyping
-│   ├── obj.py
-│   ├── processing.py
-│   ├── test.png
-│   └── validation.ipynb
-├── requirements.txt
-├── scripts
-│   ├── __pycache__
-│   │   └── utils.cpython-37.pyc
-│   ├── autotest.py
-│   ├── postprocess.py
-│   ├── preprocess.py
-│   └── utils.py
-├── src
-│   └── imaging
-│       ├── Makefile
-│       ├── conv.c
-│       ├── conv.h
-│       ├── filter.c
-│       ├── filter.h
-│       ├── fourier.c
-│       ├── fourier.h
-│       ├── image.c
-│       ├── image.h
-│       ├── main.c
-│       ├── processmake
-│       ├── utils.c
-│       └── utils.h
-└── test.png`
+`├── README.md` <br>
+`├── Stochastic_Analysis.ipynb` <br>
+`├── prototyping` <br>
+`│   ├── obj.py` <br>
+`│   ├── processing.py` <br>
+`│   ├── test.png` <br>
+`│   └── validation.ipynb` <br>
+`├── requirements.txt` <br>
+`├── scripts` <br>
+`│   ├── autotest.py` <br>
+`│   ├── postprocess.py` <br>
+`│   ├── preprocess.py` <br>
+`│   └── utils.py` <br>
+`├── src` <br>
+`│   └── imaging` <br>
+`│       ├── Makefile` <br>
+`│       ├── conv.c` <br>
+`│       ├── conv.h` <br>
+`│       ├── filter.c` <br>
+`│       ├── filter.h` <br>
+`│       ├── fourier.c` <br>
+`│       ├── fourier.h` <br>
+`│       ├── image.c` <br>
+`│       ├── image.h` <br>
+`│       ├── main.c` <br>
+`│       ├── processmake` <br>
+`│       ├── utils.c` <br>
+`│       └── utils.h` <br>
+`└── test.png` <br>
 
 ## Project Description
 The project provides implementations from scratch!!! of classical image denosing algorithms that include: <br>

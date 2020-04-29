@@ -102,7 +102,7 @@ Compute PSNR metrics and add to logging.txt, create .jpg for output.txt file
 2.  `python scripts/preprocess.py --input ./test.png --output ./experiment --size 256` <br>
 3.   `cd src/imaging ` <br>
 4.   `make processmake` <br>
-5.  `./processmake -t ../../experiment/ noisy.txt 0.3` <br>
+5.  `./processmake -t ../../experiment/ noisy.txt 256 0.3` <br>
 6.  `cd ../../` <br>
 7. `python scripts/postprocess.py --input ./experiment` <br>
 

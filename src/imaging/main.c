@@ -329,7 +329,7 @@ int main(int argc, char* argv[]){
 
             case 't':
                 
-                printf("This is for the Couley Turkey fourier Transform\n");
+                printf("This is for the Cooley-Tukey fourier Transform\n");
                 
                 // input arguments required: input image, size of image, sigma of kernel and size of kernel
                 // example:
@@ -392,7 +392,7 @@ int main(int argc, char* argv[]){
                 // inverse fft
                 ctifft(cImgInput);
                 end = gettime();
-                printf("The time taken for Cooley Turkey FFT was : %f us\n", end - start);
+                printf("The time taken for Cooley-Tukey FFT was : %f us\n", end - start);
 
                 // the int are usually under 256 & the comma and the +1 is for the null terminator
                 free(result);
@@ -425,7 +425,7 @@ int main(int argc, char* argv[]){
                 fp = fopen(fullPath, "wb");
                 sprintf(sImageSize, "Size of image: %ld \n", sizeImg);
                 sprintf(sRDistance, "R value: %f \n", rValue);
-                sprintf(sTimeTaken, "Time taken Cooley Turkey FFT: %f us \n", end - start);
+                sprintf(sTimeTaken, "Time taken Cooley-Tukey FFT: %f us \n", end - start);
                 fputs(sImageSize, fp);
                 fputs(sRDistance, fp);
                 fputs(sTimeTaken, fp);
